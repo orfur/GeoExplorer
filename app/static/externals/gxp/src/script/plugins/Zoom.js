@@ -34,25 +34,25 @@ gxp.plugins.Zoom = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for zoom in menu item (i18n).
      */
-    zoomInMenuText: "Zoom In",
+    zoomInMenuText: "Yakınlaştır",
 
     /** api: config[zoomOutMenuText]
      *  ``String``
      *  Text for zoom out menu item (i18n).
      */
-    zoomOutMenuText: "Zoom Out",
+    zoomOutMenuText: "Uzaklaştır",
 
     /** api: config[zoomInTooltip]
      *  ``String``
      *  Text for zoom in action tooltip (i18n).
      */
-    zoomInTooltip: "Zoom In",
+    zoomInTooltip: "Yakınlaştır",
 
     /** api: config[zoomOutTooltip]
      *  ``String``
      *  Text for zoom out action tooltip (i18n).
      */
-    zoomOutTooltip: "Zoom Out",
+    zoomOutTooltip: "Uzaklaştır",
     
     /** private: method[constructor]
      */
@@ -68,18 +68,19 @@ gxp.plugins.Zoom = Ext.extend(gxp.plugins.Tool, {
             iconCls: "gxp-icon-zoom-in",
             tooltip: this.zoomInTooltip,
             handler: function() {
-                this.target.mapPanel.map.zoomIn();    
+            	 this.target.mapPanel.map.zoomIn();
             },
             scope: this
-        }, {
-            menuText: this.zoomOutMenuText,
-            iconCls: "gxp-icon-zoom-out",
-            tooltip: this.zoomOutTooltip,
-            handler: function() {
-                this.target.mapPanel.map.zoomOut();
-            },
+        },
+	    new GeoExt.Action({
+	    	tooltip: this.zoomInMenuText,
+            iconCls: "gxp-icon-zoom-in",
+            map: this.target.mapPanel.map,
+            control: new OpenLayers.Control.ZoomBox({alwaysZoom:true}),
+            toggleGroup: this.toggleGroup,
+            group: this.toggleGroup,
             scope: this
-        }];
+	    })];
         return gxp.plugins.Zoom.superclass.addActions.apply(this, [actions]);
     }
         

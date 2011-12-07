@@ -121,10 +121,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 toggleGroup: this.toggleGroup
             }, {
                 leaf: true, 
-                text: gxp.plugins.Zoom.prototype.zoomInTooltip + " / " + gxp.plugins.Zoom.prototype.zoomOutTooltip, 
+                text: gxp.plugins.Zoom.prototype.zoomInTooltip, 
                 checked: true, 
                 iconCls: "gxp-icon-zoom-in",
-                numberOfButtons: 2,
+                numberOfButtons: 1,
                 ptype: "gxp_zoom"
             }, {
                 leaf: true, 
@@ -350,6 +350,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var tools = [
             "-"
         ];
+        console.log(tools);
         return tools;
     },
     
