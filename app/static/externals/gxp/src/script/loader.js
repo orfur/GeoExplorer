@@ -81,9 +81,7 @@
         "plugins/Print.js",
         "plugins/LoadingIndicator.js",
         "plugins/Playback.js",
-        "plugins/Testtool.js",
-        "locale/es.js",
-        "locale/ca.js"
+        "locale/tr.js"
     );
     
     var scripts = document.getElementsByTagName("script");

@@ -63,15 +63,7 @@ gxp.plugins.Zoom = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
-        var actions = [{
-            menuText: this.zoomInMenuText,
-            iconCls: "gxp-icon-zoom-in",
-            tooltip: this.zoomInTooltip,
-            handler: function() {
-            	 this.target.mapPanel.map.zoomIn();
-            },
-            scope: this
-        },
+        var actions = [
 	    new GeoExt.Action({
 	    	tooltip: this.zoomInMenuText,
             iconCls: "gxp-icon-zoom-in",

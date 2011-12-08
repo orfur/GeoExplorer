@@ -350,7 +350,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         var tools = [
             "-"
         ];
-        console.log(tools);
         return tools;
     },
     
