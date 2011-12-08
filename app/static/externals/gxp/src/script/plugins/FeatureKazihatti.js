@@ -101,16 +101,6 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     
     addActions: function() {
   	  var map,info,controls,wfs;
-      var actions = [new GeoExt.Action({
-            tooltip: this.tooltip,
-            menuText: this.menuText,
-            iconCls: "gxp-icon-pan",
-            enableToggle: true,
-            pressed: true,
-            allowDepress: false,
-            control: new OpenLayers.Control.Navigation(this.controlOptions),
-            map: this.target.mapPanel.map,
-            toggleGroup: this.toggleGroup})];
         
       var drawControl = new OpenLayers.Control.DrawFeature(
         		this.featureLayer,
@@ -236,14 +226,12 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 					                        text: "Tamam",
 					                        formBind: true,
 					                        handler: function(){
-					                        	console.log(cbxRegion.getValue());
 					                        	var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",cbxRegion.getValue()));
 					                        	for (r in item.data)
 					                        	{
 					                        		if (r!='MAH_SOK')
 					                        			featureAttributes[r] = item.data[r];
 					                        	}
-					                        	console.log(featureAttributes);
 					                        	selectRegionWin.hide();
 					                        },
 					                        scope: this
@@ -251,6 +239,15 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 							            modal: true    							         
 							        });
 									selectRegionWin.show();
+    						  }
+    						  else
+    						  {
+    							  var item = mahSokStore.getAt(0);
+    							  for (r in item.data)
+    							  {
+		                        	if (r!='MAH_SOK')
+		                        	featureAttributes[r] = item.data[r];
+    							  } 
     						  }
                         },
                         activate: function() {
@@ -264,7 +261,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
                 }
             );
         
-        var actions = [new GeoExt.Action({
+        	var actions = [new GeoExt.Action({
 	            tooltip: "Kazı Hattı Oluştur",
 	            menuText: "Kazı Hattı Oluştur",
 	            iconCls: "gxp-icon-addfeature",
@@ -276,7 +273,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            toggleGroup: this.toggleGroup})];
         
         
-        actions.push(new GeoExt.Action({
+        	actions.push(new GeoExt.Action({
 	            tooltip: "Kazı hatlarını kaydet",
 	            menuText: "Kazı hatlarını kaydet",
 	            iconCls: "gxp-icon-featurekazihattisave",
@@ -284,11 +281,10 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            pressed: false,
 	            allowDepress: false,
 	            saveStrategy:this.saveStrategy,
-	            handler: function(evt){ evt.saveStrategy.save()}, //console.log(evt.saveStrategy)},
+	            handler: function(evt){ evt.saveStrategy.save()},
 	            map: this.target.mapPanel.map}));
-        
-        	
-        	return actions = gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, actions);//gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
+                	
+        	return actions = gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
         }      
 		
 });

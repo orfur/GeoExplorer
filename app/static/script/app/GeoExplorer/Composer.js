@@ -75,45 +75,40 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }, {
                 ptype: "gxp_zoomtolayerextent",
                 actionTarget: {target: "layertree.contextMenu", index: 0}
-            }, {
-                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 5}
-            }, {
-                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 6}
             }, 
-            /*{
-                ptype: "gxp_featureeditor",
-                featureManager: "featuremanager",
-                autoLoadFeatures: true,
-                toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 8}
-            },*/
             {
-                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
-                controlOptions: {immediate: true},
-                actionTarget: {target: "paneltbar", index: 10}
-            }, {
-                ptype: "gxp_zoom",
-                toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 11}
-            }, {
-                ptype: "gxp_navigationhistory",
-                actionTarget: {target: "paneltbar", index: 12}
-            }, {
-                ptype: "gxp_zoomtoextent",
-                actionTarget: {target: "paneltbar", index: 15}
-            }, {
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'GeoExplorer-print'},
                 printService: config.printService,
                 actionTarget: {target: "paneltbar", index: 3}
             },
             {
-                ptype: "gxp_featurekazihatti",
-                toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 18}
+                ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 5}
             },
+            {
+                ptype: "gxp_zoom",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 6}
+            },
+            {
+                ptype: "gxp_navigationhistory",
+                actionTarget: {target: "paneltbar", index: 7}
+            },
+            {
+                ptype: "gxp_zoomtoextent",
+                actionTarget: {target: "paneltbar", index: 8}
+            }, 
+            {
+                ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+                controlOptions: {immediate: true},
+                actionTarget: {target: "paneltbar", index: 11}
+            },
+            {
+                ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 12}
+            },
+            /*
             {
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 17},
@@ -122,6 +117,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     "localhost:8080": "ABQIAAAAeDjUod8ItM9dBg5_lz0esxTnme5EwnLVtEDGnh-lFVzRJhbdQhQBX5VH8Rb3adNACjSR5kaCLQuBmw",
                     "example.com": "-your-api-key-here-"
                 }
+            },
+            */
+            {
+                ptype: "gxp_featurekazihatti",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 14}
             }
         ];
         
@@ -314,13 +315,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 this.showLogout(user);
             }
         }
-
+        /*
         var aboutButton = new Ext.Button({
-            //text: this.appInfoText,
-            //iconCls: "icon-geoexplorer",
-            //handler: this.displayAppInfo,
+            text: this.appInfoText,
+            iconCls: "icon-geoexplorer",
+            handler: this.displayAppInfo,
             scope: this
         });
+        */
 
         tools.unshift("-");
         tools.unshift(new Ext.Button({
@@ -343,6 +345,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             scope: this,
             iconCls: "icon-save"
         }));
+        tools.push("-");
+        tools.push("-");
         //tools.unshift("-");
         //tools.unshift(aboutButton);
         return tools;

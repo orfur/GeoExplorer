@@ -53,14 +53,16 @@
             },
             defaultSourceType: "gxp_wmscsource",
             sources: {
+            	/*
                 local: {
                     url: "/geoserver/ows",
-                    title: "Local GeoServer",
+                    title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },
+                */
                 suite: {
-                    url: "http://v2.suite.opengeo.org/geoserver/ows",
-                    title: "Remote Suite GeoServer"
+                    url: "http://10.0.0.153:8080/geoserver/ows",
+                    title: "UniGeoSever"
                 },
                 /*
                 mapquest: {
@@ -90,12 +92,19 @@
                     -20037508.34, -20037508.34,
                     20037508.34, 20037508.34
                 ],
-                layers: [{
-                    source: "google",
-                    title: "Google Roadmap",
+                layers: [
+                {
+                    source: "suite",
+                    title: "Kazı Hattı",
+                    name: "SDE.KAZIHATTI"
+                },
+                {
+                	source: "google",
+                    title: "Google Harita",
                     name: "ROADMAP",
                     group: "background"
-                }, {
+                }
+                /*{
                     source: "ol",
                     group: "background",
                     fixed: true,
@@ -103,7 +112,8 @@
                     args: [
                         "None", {visibility: false}
                     ]
-                }],
+                }*/
+                ],
                 center: [0, 0],
                 zoom: 2
             }

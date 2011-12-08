@@ -200,7 +200,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      * Constructs a window with a capabilities grid.
      */
     initCapGrid: function() {
-        var source, data = [];        
+        var source, data = [];     
         for (var id in this.target.layerSources) {
             source = this.target.layerSources[id];
             if (source.store) {
