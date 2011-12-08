@@ -9,16 +9,16 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     popupTitle: "Kazi hattı oluştur",
     featureLayer: null,
     tooltip: "Kazi hattı oluştur",
-	  gs_WmsMapUrl: "http://10.0.0.153:8080/geoserver/wms",
-	  //-> /geoserver/wfs geoserver local olacagindan dolayi - bu sekilde yazabiliriz.
-	  gs_WfsKaziHatUrl : "http://10.0.0.153:8080/geoserver/wfs",
-	  gs_WfsKaziHat : "UniversalWorkspace:SDE.KAZIHATTI",
-	  gs_WfsGeometry : "SHAPE",
-	  gs_MapProjection : "EPSG:900913",
-	  saveStrategy:null,
-	  snap:null,
-      init: function(target) {
-        gxp.plugins.Featurekazihatti.superclass.init.apply(this, arguments);
+	gs_WmsMapUrl: "http://10.0.0.153:8080/geoserver/wms",
+	//-> /geoserver/wfs geoserver local olacagindan dolayi - bu sekilde yazabiliriz.
+	gs_WfsKaziHatUrl : "http://10.0.0.153:8080/geoserver/wfs",
+	gs_WfsKaziHat : "UniversalWorkspace:SDE.KAZIHATTI",
+	gs_WfsGeometry : "SHAPE",
+	gs_MapProjection : "EPSG:900913",
+	saveStrategy:null,
+	snap:null,
+    init: function(target) {
+    	gxp.plugins.Featurekazihatti.superclass.init.apply(this, arguments);
         this.toolsShowingLayer = {};
         
         
@@ -98,9 +98,8 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     },
     
     
+    
     addActions: function() {
-
-    	  
   	  var map,info,controls,wfs;
       var actions = [new GeoExt.Action({
             tooltip: this.tooltip,
@@ -154,59 +153,105 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     						 var request = OpenLayers.Request.GET({
     							    url: wfsurl,
     							    async: false
-    							});
-
-    						  var featureAttributes  =	feature.attributes;
-    						  var g =  new OpenLayers.Format.JSON(); 
-    						  var features_sCollection = g.read(request.responseText); 
-    						  var features_sokak = features_sCollection.features;
-    						  for(var i=0;i<features_sokak.length;i++) 
-    						  { 
-    							    geometryLineString = "";
-    								var attributes = features_sokak[i].properties;
-    								
-    								for (var coordinateIndex=0; coordinateIndex<features_sokak[i].geometry.coordinates[0].length; coordinateIndex++) 
-    								{ 
-    									geometryLineString+= features_sokak[i].geometry.coordinates[0][coordinateIndex][0] + "%20";
-    									geometryLineString+= features_sokak[i].geometry.coordinates[0][coordinateIndex][1];
-    									
-    									if(coordinateIndex!=features_sokak[i].geometry.coordinates[0].length-1)
-    										geometryLineString+=",";
-    								}
-    								
-    								var wfsurl2 = gs_WfsKaziHatUrl +  '?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&SRS=' + 
-    											  gs_MapProjection + '&outputFormat=json' +'&typename=' + typenameMah+ 
-    											  '&propertyName=ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID,SHAPE&cql_filter=INTERSECTS(SHAPE,LINESTRING(' + 
-    											  geometryLineString + '))';
-    								
-    	   						    var request_Mah = OpenLayers.Request.GET({
-    									    url: wfsurl2,
-    									    async: false
-    								});
-    								
-    								var gMah =  new OpenLayers.Format.JSON(); 
-    								var featuresMCollection = gMah.read(request_Mah.responseText); 
-    								var featuresMahalle = featuresMCollection.features;
-    								for(var j=0;j<featuresMahalle.length;j++) 
-    								{	 
-    									var attributesMah = featuresMahalle[j].properties;
-    									featureAttributes["YOL_ID"] 	= attributes["YOL_ID"];
-    									featureAttributes["YOL_ISMI"] 	= attributes["YOL_ISMI"];
-    									featureAttributes["YOL_KAPLAMA_CINSI"] 	= attributes["KAPLAMA_CI"];
-    									featureAttributes["MAH_ID"] 	= attributesMah["MAHALLEID"];
-    									featureAttributes["MAH_ADI"] 	= attributesMah["KOYMAHALLEADI"];
-    									featureAttributes["ILCE_ID"] 	= attributesMah["ILCEID"];
-    									featureAttributes["ILCE_ADI"] 	= attributesMah["ILCEADI"];
-    								}
-    								alert(request_Mah.responseText);
-    							
+    						 });
+    						 
+    						 //console.log(request.responseText);
+    						 var featureAttributes  =	feature.attributes;
+    						 var jsonFormatter =  new OpenLayers.Format.JSON(); 
+    						 var featuresSokak = jsonFormatter.read(request.responseText).features;
+    						 var mahSokStore = new Ext.data.ArrayStore({
+						        id: 0,
+						        fields: ['YOL_ID','YOL_ISMI','YOL_KAPLAMA_CINSI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI','MAH_SOK']
+							 });
+    						 for(var i=0;i<featuresSokak.length;i++) 
+    						 { 
+    							geometryLineString = "";
+    							var attrSok = featuresSokak[i].properties;
+    							if (mahSokStore.find("YOL_ISMI",attrSok["YOL_ISMI"])==-1)
+    							{
+    								mahSokStore.add(new Ext.data.Record({'YOL_ID': attrSok["YOL_ID"], 'YOL_ISMI':attrSok["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': attrSok["KAPLAMA_CI"]}));
+	    							for (var coordinateIndex=0; coordinateIndex<featuresSokak[i].geometry.coordinates[0].length; coordinateIndex++) 
+	    							{ 
+	    								geometryLineString+= featuresSokak[i].geometry.coordinates[0][coordinateIndex][0] + "%20";
+	    								geometryLineString+= featuresSokak[i].geometry.coordinates[0][coordinateIndex][1];
+	    								if(coordinateIndex!=featuresSokak[i].geometry.coordinates[0].length-1)
+	    									geometryLineString+=",";
+	    							}
+									wfsurl = gs_WfsKaziHatUrl +  '?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&SRS=' + 
+												  gs_MapProjection + '&outputFormat=json' +'&typename=' + typenameMah+ 
+												  '&propertyName=ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID&cql_filter=INTERSECTS(SHAPE,LINESTRING(' + 
+												  geometryLineString + '))';
+									 
+									request = OpenLayers.Request.GET({
+										    url: wfsurl,
+										    async: false
+									});
+	    								
+									//console.log(request.responseText);
+									var featuresMahalle = jsonFormatter.read(request.responseText).features;
+									for(var j=0;j<featuresMahalle.length;j++) 
+									{	 
+										var attrMah = featuresMahalle[j].properties;
+										var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",attrSok["YOL_ID"]));
+										item.data["MAH_ID"] = attrMah["MAHALLEID"];
+										item.data["MAH_ADI"] = attrMah["KOYMAHALLEADI"];
+										item.data["ILCE_ID"] = attrMah["ILCEID"];
+										item.data["ILCE_ADI"] = attrMah["ILCEADI"];
+										item.data["MAH_SOK"] = attrMah["KOYMAHALLEADI"]+" : "+item.data["YOL_ISMI"];
+									}
+    							}
     						  }
-    						  
-
-    						 alert(request.responseText);
-                        	
-                        	
-                        	
+    						  console.log("s:"+featuresSokak.length+" m:"+featuresMahalle.length+" ms:"+mahSokStore.getCount());
+    						  if (mahSokStore.getCount() > 1)
+    						  {
+    							  var cbxRegion = new Ext.form.ComboBox({
+    								    typeAhead: true,
+    								    triggerAction: 'all',
+    								    lazyRender:true,
+    								    editable: false,
+    						            allowBlank: false,
+    						            forceSelection: true,
+    						            width: 200,
+    								    mode: 'local',
+    								    fieldLabel: "Sokak",
+    								    store: mahSokStore,
+    								    valueField: 'YOL_ID',
+    								    displayField: 'MAH_SOK'
+    							  });
+    							  var selectRegionWin = new Ext.Window({
+							            title: "Mahalle / Sokak Seçin",
+							            layout: "fit",
+							            height: 100,
+							            width: 280,
+							            items: [
+							                    {
+									                xtype: "form",
+									                bodyStyle: "padding: 5px;",
+									                labelWidth: 40,
+									                items: [
+										                cbxRegion
+									                ]
+							            		}],
+					            		buttons: [{
+					                        text: "Tamam",
+					                        formBind: true,
+					                        handler: function(){
+					                        	console.log(cbxRegion.getValue());
+					                        	var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",cbxRegion.getValue()));
+					                        	for (r in item.data)
+					                        	{
+					                        		if (r!='MAH_SOK')
+					                        			featureAttributes[r] = item.data[r];
+					                        	}
+					                        	console.log(featureAttributes);
+					                        	selectRegionWin.hide();
+					                        },
+					                        scope: this
+					                    }],
+							            modal: true    							         
+							        });
+									selectRegionWin.show();
+    						  }
                         },
                         activate: function() {
                         	//alert("activate");
@@ -243,7 +288,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            map: this.target.mapPanel.map}));
         
         	
-        	return actions = gxp.plugins.Testtool.superclass.addActions.call(this, actions);//gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
+        	return actions = gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, actions);//gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
         }      
 		
 });

@@ -8,12 +8,8 @@
     <property name="build" location="build"/>
     <property name="app.proxy.geoserver" value=""/>
     <property name="app.port" value="8080"/>
-    <condition property="git" value="git.cmd" else="git">
-        <os family="windows"/>
-    </condition>
 
     <target name="init">
-
 
         <echo message="building ringo jars"/>
         <ant dir="externals/ringojs" target="jar"/>

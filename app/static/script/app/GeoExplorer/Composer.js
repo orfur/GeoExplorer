@@ -77,31 +77,29 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "layertree.contextMenu", index: 0}
             }, {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 6}
+                actionTarget: {target: "paneltbar", index: 5}
             }, {
                 ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 7}
-            }, {
-                ptype: "gxp_featuremanager",
-                id: "featuremanager",
-                maxFeatures: 20,
-                paging: false
-            }, {
+                actionTarget: {target: "paneltbar", index: 6}
+            }, 
+            /*{
                 ptype: "gxp_featureeditor",
                 featureManager: "featuremanager",
                 autoLoadFeatures: true,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 8}
-            }, {
+            },*/
+            {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
                 controlOptions: {immediate: true},
                 actionTarget: {target: "paneltbar", index: 10}
             }, {
                 ptype: "gxp_zoom",
+                toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 11}
             }, {
                 ptype: "gxp_navigationhistory",
-                actionTarget: {target: "paneltbar", index: 13}
+                actionTarget: {target: "paneltbar", index: 12}
             }, {
                 ptype: "gxp_zoomtoextent",
                 actionTarget: {target: "paneltbar", index: 15}
@@ -109,22 +107,22 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'GeoExplorer-print'},
                 printService: config.printService,
-                actionTarget: {target: "paneltbar", index: 5}
-            },{
-                ptype: "gxp_testtool",
-                featureManager: "featuremanager",
-                autoLoadFeatures: true,
-                toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 16}
-            },{
+                actionTarget: {target: "paneltbar", index: 3}
+            },
+            {
                 ptype: "gxp_featurekazihatti",
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 18}
+<<<<<<< HEAD
             },{
                 ptype: "gxp_kocaeligissorgu",
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 19}
             },{
+=======
+            },
+            {
+>>>>>>> cbdea46e05480738ab9ecf5c671fbda918995768
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 17},
                 apiKeys: {
@@ -313,7 +311,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         this.loginButton = new Ext.Button();
-        tools.push(['->', this.loginButton]);
+        //tools.push(['->', this.loginButton]);
 
         // unauthorized, show login button
         if (this.authorizedRoles.length === 0) {
@@ -353,8 +351,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             scope: this,
             iconCls: "icon-save"
         }));
-        tools.unshift("-");
-        tools.unshift(aboutButton);
+        //tools.unshift("-");
+        //tools.unshift(aboutButton);
         return tools;
     },
 

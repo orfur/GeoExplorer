@@ -133,7 +133,6 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 
         tools.push("->");
         tools.push(aboutButton);
-
         return tools;
     }
 });

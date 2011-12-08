@@ -40,6 +40,8 @@
         if (GeoExt.Lang) {
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
+        GeoExt.Lang.set("tr");
+        
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
             proxy: "proxy/?url=",
