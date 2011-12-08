@@ -25,9 +25,37 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	            handler: function(evt)
 	            { 
 	            	console.log(evt)
+	            	var layers = {};
+	            	var layersDataItems = evt.mapPanel.layers.data.items;
+	            	for(var i=0;i<layersDataItems.length;i++)
+	            	{
+	            		var layerKeywords = layersDataItems[i].data.keywords;
+	            		if(layerKeywords!=null)
+	            		{	
+		            		for(var j=0;j<layerKeywords.length;j++)
+		            		{
+		            			if(layerKeywords[j] == "Bina")
+		            				layers.Bina = evt.mapPanel.map.layers[i];
+		            			else if(layerKeywords[j] == "Mahalle")
+		            				layers.Mahalle = evt.mapPanel.map.layers[i];
+		            			else if(layerKeywords[j] == "Sokak")
+		            				layers.Sokak = evt.mapPanel.map.layers[i];
+		            			else if(layerKeywords[j] == "Kapi")
+		            				layers.Kapi = evt.mapPanel.map.layers[i];
+		            			else if(layerKeywords[j] == "İlçe")
+		            				layers.Ilce = evt.mapPanel.map.layers[i];
+		            			
+		            		}
+	            		}
+	            	}
+	            	
+	            	
+	            	
+	            	
+	            	
 	            	
 	            },
-	            map: this.target.mapPanel.map})];
+	            mapPanel: this.target.mapPanel})];
         	
         return actions = gxp.plugins.Testtool.superclass.addActions.call(this, actions);//gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
     }      

@@ -288,7 +288,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            map: this.target.mapPanel.map}));
         
         	
-        	return actions = gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, actions);//gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
+        	return actions = gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);//gxp.plugins.Featurekazihatti.superclass.addActions.apply(this, [actions]);
         }      
 		
 });

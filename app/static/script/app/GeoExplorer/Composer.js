@@ -108,21 +108,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 customParams: {outputFilename: 'GeoExplorer-print'},
                 printService: config.printService,
                 actionTarget: {target: "paneltbar", index: 3}
-            },
-            {
+            },{
                 ptype: "gxp_featurekazihatti",
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 18}
-<<<<<<< HEAD
             },{
                 ptype: "gxp_kocaeligissorgu",
                 toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 19}
+                actionTarget: {target: "paneltbar", index: 20}
             },{
-=======
-            },
-            {
->>>>>>> cbdea46e05480738ab9ecf5c671fbda918995768
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 17},
                 apiKeys: {
