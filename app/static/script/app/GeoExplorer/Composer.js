@@ -121,6 +121,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 18}
             },{
+                ptype: "gxp_kocaeligissorgu",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 19}
+            },{
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 17},
                 apiKeys: {
