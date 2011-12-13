@@ -164,11 +164,12 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     }, 
 
     loadConfig: function(config) {
-        
+    	
         var mapUrl = window.location.hash.substr(1);
         var match = mapUrl.match(/^maps\/(\d+)$/);
         if (match) {
             this.id = Number(match[1]);
+            
             OpenLayers.Request.GET({
                 url: mapUrl,
                 success: function(request) {
@@ -201,13 +202,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 scope: this
             });
         } else {
+        	
             var query = Ext.urlDecode(document.location.search.substr(1));
             if (query && query.q) {
                 var queryConfig = Ext.util.JSON.decode(query.q);
                 Ext.apply(config, queryConfig);
+                
             }
             this.applyConfig(config);
         }
+        
         
     },
     

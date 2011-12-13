@@ -500,6 +500,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             for (var i=0; i<mapConfig.layers.length; ++i) {
                 conf = mapConfig.layers[i];
                 source = this.layerSources[conf.source];
+               // console.log(source);
                 // source may not have loaded properly (failure handled elsewhere)
                 if (source) {
                     record = source.createLayerRecord(conf);

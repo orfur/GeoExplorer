@@ -62,8 +62,8 @@ GeoExt.Lang.add("tr", {
     
     "gxp.plugins.LayerTree.prototype": {
         rootNodeText: "Katmanlar",
-        overlayNodeText: "Bindirme Katmanlar",
-        baseNodeText: "Temel Katmanlar"
+        overlayNodeText: "Katmanlar",
+        baseNodeText: "Harita Altlıkları"
     },
 
     "gxp.plugins.Legend.prototype": {
@@ -95,14 +95,14 @@ GeoExt.Lang.add("tr", {
     "gxp.plugins.Measure.prototype": {
         lengthMenuText: "Uzunluk",
         areaMenuText: "Alan",
-        lengthTooltip: "Uzunluk Ölç",
-        areaTooltip: "Alan Ölç",
+        lengthTooltip: "Uzunluk",
+        areaTooltip: "Alan",
         measureTooltip: "Ölçü"
     },
 
     "gxp.plugins.Navigation.prototype": {
-        menuText: "Harita Kaydir",
-        tooltip: "Harita Kaydir"
+        menuText: "Harita Kaydır",
+        tooltip: "Harita Kaydır"
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
