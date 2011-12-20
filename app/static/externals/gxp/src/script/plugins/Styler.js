@@ -173,13 +173,16 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
                 url = source.url.split("?")
                     .shift().replace(/\/(wms|ows)\/?$/, "/rest/styles");
             }
-            if (this.sameOriginStyling) {
-                // this could be made more robust
-                // for now, only style for sources with relative url
-                editableStyles = url.charAt(0) === "/";
-            } else {
+//	orfur
+//            if (this.sameOriginStyling) {
+//                // this could be made more robust
+//                // for now, only style for sources with relative url
+//                editableStyles = url.charAt(0) === "/";
+//            } else {
                 editableStyles = true;
-            }
+//            }
+// orfur
+            editableStyles = true;
             if (editableStyles) {
                 if (this.target.isAuthorized()) {
                     // check if service is available

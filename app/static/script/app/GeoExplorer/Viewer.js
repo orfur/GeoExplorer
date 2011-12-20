@@ -58,6 +58,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             }
         }
         config.tools = tools;
+
         GeoExplorer.Viewer.superclass.applyConfig.call(this, config);
     },
 

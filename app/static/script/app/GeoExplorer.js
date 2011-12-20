@@ -254,7 +254,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     },
     
     getKurumID: function() {
-    	//TODO: BurasÄ± doldurulacak
+    	//TODO: Burasý doldurulacak
     	return 12;
     },
     
@@ -439,7 +439,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     /** private: method[showUrl]
      */
     showUrl: function() {
-    	Ext.Msg.alert('Kaydedildi', 'Harita baÅŸarÄ±yla kaydedildi!');
+    	Ext.Msg.alert('Kaydedildi', 'Harita baþarýyla kaydedildi!');
     	/*
         var win = new Ext.Window({
             title: this.bookmarkText,

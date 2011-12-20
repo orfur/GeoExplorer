@@ -125,6 +125,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 wfsURL: config.wfsURL,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 13}
+            },
+            {
+                ptype: "gxp_kocaeligissorgu",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 16}
             }
         ];
         
