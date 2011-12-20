@@ -6,7 +6,9 @@
     </description>
 
     <property name="build" location="build"/>
-    <property name="app.proxy.geoserver" value=""/>
+    <property name="app.proxy.geoserver" value="http://10.0.0.153:8080/geoserver/"/>
+    <property name="app.username" value="aykome"/>
+    <property name="app.password" value="aykome"/>
     <property name="app.port" value="8080"/>
 
     <target name="init">
@@ -69,18 +71,25 @@
         <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/PrintPreview/resources">
             <fileset dir="app/static/externals/PrintPreview/resources"/>
         </copy>
+        <!-- copy Proj4js resources -->
+        <copy todir="${build}/${ant.project.name}/WEB-INF/app/static/externals/proj4js">
+            <fileset dir="app/static/externals/proj4js"/>
+        </copy>
         
     </target>
-
+	
     <target name="war" depends="dist">
         <war destfile="${build}/${ant.project.name}.war">
             <fileset dir="${build}/${ant.project.name}"/>
         </war>
+    	<copy file="${build}/${ant.project.name}.war" todir="C:/apache-tomcat-7.0.23/webapps/"/>
     </target>
 
     <target name="debug">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+            <sysproperty key="app.username" value="${app.username}"/>
+            <sysproperty key="app.password" value="${app.password}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
             <arg path="app/main.js"/>
@@ -91,6 +100,8 @@
     <target name="debugall">
         <java jar="externals/ringojs/run.jar" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+        	<sysproperty key="app.username" value="${app.username}"/>
+        	<sysproperty key="app.password" value="${app.password}"/>
             <sysproperty key="ringo.home" path="externals/ringojs"/>
             <arg value="-d"/>
             <arg path="app/main.js"/>

@@ -20,10 +20,10 @@ GeoExt.Lang.add("tr", {
     },
     
     "gxp.plugins.BingSource.prototype": {
-        title: "Bing Layers",
-        roadTitle: "Bing Roads",
-        aerialTitle: "Bing Aerial",
-        labeledAerialTitle: "Bing Aerial With Labels"
+        title: "Bing Katmanları",
+        roadTitle: "Bing Harita",
+        aerialTitle: "Bing Uydu",
+        labeledAerialTitle: "Bing Uydu(Etiketli)"
     },
 
     "gxp.plugins.FeatureEditor.prototype": {
@@ -49,10 +49,10 @@ GeoExt.Lang.add("tr", {
     
     "gxp.plugins.GoogleSource.prototype": {
         title: "Google Katmanları",
-        roadmapAbstract: "Show street map",
-        satelliteAbstract: "Show satellite imagery",
-        hybridAbstract: "Show imagery with street names",
-        terrainAbstract: "Show street map with terrain"
+        roadmapAbstract: "Google Haritaları",
+        satelliteAbstract: "Google Uydu Görüntüleri",
+        hybridAbstract: "Google Hibrid",
+        terrainAbstract: "Google Topografik"
     },
 
     "gxp.plugins.LayerProperties.prototype": {
@@ -67,8 +67,8 @@ GeoExt.Lang.add("tr", {
     },
 
     "gxp.plugins.Legend.prototype": {
-        menuText: "Legend",
-        tooltip: "Legend"
+        menuText: "Lejand",
+        tooltip: "Lejand"
     },
 
     "gxp.plugins.LoadingIndicator.prototype": {
