@@ -53,16 +53,17 @@
             },
             defaultSourceType: "gxp_wmscsource",
             sources: {
+            	
                 local: {
-                    url: "/geoserver/ows",
-                    title: "Local GeoServer",
+                    url: "http://10.0.0.153:8080/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",//"http://geoserver.kocaeli.bel.tr:8090/geoserver/ows", //"/geoserver/ows",
+                    title: "Kurum Katmanları",
                     ptype: "gxp_wmscsource"
                 },
-                suite: {
-                    url: "http://v2.suite.opengeo.org/geoserver/ows",
-                    title: "Remote Suite GeoServer"
-                },
                 /*
+                suite: {
+                    url: "http://10.0.0.153:8080/geoserver/ows",
+                    title: "UniGeoSever"
+                },
                 mapquest: {
                     ptype: "gxp_mapquestsource"
                 },
@@ -77,33 +78,36 @@
                 },
                 /*mapbox: {
                     ptype: "gxp_mapboxsource"
-                },
+                },*/
                 ol: {
                     ptype: "gxp_olsource"
-                }*/
+                }
             },
             map: {
-                projection: "EPSG:102113",
+                projection: "EPSG:900913",//"EPSG:102113",
                 units: "m",
                 maxResolution: 156543.0339,
                 maxExtent: [
                     -20037508.34, -20037508.34,
                     20037508.34, 20037508.34
                 ],
-                layers: [{
-                    source: "google",
-                    title: "Google Roadmap",
+                layers: [
+                {
+                	source: "google",
+                    title: "Google Harita",
                     name: "ROADMAP",
                     group: "background"
-                }, {
+                }
+                ,{
                     source: "ol",
                     group: "background",
                     fixed: true,
                     type: "OpenLayers.Layer",
                     args: [
-                        "None", {visibility: false}
+                        "Hiçbiri", {visibility: false}
                     ]
-                }],
+                }
+                ],
                 center: [0, 0],
                 zoom: 2
             }
