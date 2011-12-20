@@ -123,6 +123,23 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_featurekazihatti",
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 14}
+            },
+            {
+                ptype: "gxp_kocaeligissorgu",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 16}
+            },
+            {
+                ptype: "gxp_featuremanager",
+                id: "featuremanager",
+                maxFeatures: 20,
+                paging: false
+            }, {
+                ptype: "gxp_featureeditor",
+                featureManager: "featuremanager",
+                autoLoadFeatures: true,
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 17}
             }
         ];
         
@@ -304,7 +321,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         this.loginButton = new Ext.Button();
-        //tools.push(['->', this.loginButton]);
+        tools.push(['->', this.loginButton]);
 
         // unauthorized, show login button
         if (this.authorizedRoles.length === 0) {
