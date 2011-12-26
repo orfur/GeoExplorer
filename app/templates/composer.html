@@ -44,7 +44,7 @@
         Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
-            proxy: "/proxy?url=",
+            proxy: "proxy?url=",
             printService: "/geoserver/pdf/",
             wfsURL : "http://10.0.0.153:8080/geoserver/wfs",
             about: {
@@ -55,7 +55,7 @@
             defaultSourceType: "gxp_wmscsource",
             sources: {
                 local: {
-                    url: "http://10.0.0.153:8080/geoserver/ows",
+                    url: "http://{username}:{password}@10.0.0.153:8080/geoserver/ows",
                     title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },

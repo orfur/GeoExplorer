@@ -6,10 +6,10 @@ var objects = require("ringo/utils/objects");
 var responseForStatus = require("../util").responseForStatus;
 
 var URL = java.net.URL;
-
+var request;
 var app = exports.app = function(env) {
     var response;
-    var request = new Request(env);
+    request = new Request(env);
     var url = request.queryParams.url;
     if (url) {
         response = proxyPass({
@@ -51,6 +51,14 @@ var getUrlProps = exports.getUrlProps = function(url) {
             // https://github.com/ringo/ringojs/issues/issue/121
             // but, it could make sense to keep it here as well
             [username, password] = userInfo.split(":");
+            if (request.env.servlet.getServletConfig().getInitParameter("geoserver_username")!=null) {
+            	username = username.replace("{username}",request.env.servlet.getServletConfig().getInitParameter("geoserver_username"));
+            	password = password.replace("{password}",request.env.servlet.getServletConfig().getInitParameter("geoserver_password"));
+            }else if(java.lang.System.getProperty("app.username")!=null)
+            {
+            	username = username.replace("{username}",java.lang.System.getProperty("app.username"));
+            	password = password.replace("{password}",java.lang.System.getProperty("app.password"));
+            }
             url = url.replace(userInfo + "@", "");
         }
         var port = o.getPort();
@@ -120,6 +128,7 @@ function proxyPass(config) {
     }
     exchange.wait();
     var headers = new Headers(objects.clone(exchange.headers));
+    headers.unset("Content-Type");
     if (!config.allowAuth) {
         // strip out authorization and cookie headers
         headers.unset("WWW-Authenticate");

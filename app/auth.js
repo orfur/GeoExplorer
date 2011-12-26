@@ -11,7 +11,13 @@ function getClient() {
 }
 
 function getGeoServerUrl(request) {
-    var url = java.lang.System.getProperty("app.proxy.geoserver");
+    var url;
+    if (request) {
+    	url = request.env.servlet.getServletConfig().getInitParameter("geoserver_url");
+    }
+    if (!url) {
+    	url = java.lang.System.getProperty("app.proxy.geoserver");
+    }
     if (url) {
         if (url.charAt(url.length-1) !== "/") {
             url = url + "/";
@@ -60,10 +66,15 @@ exports.authenticate = function(request) {
     var params = request.postParams;
     var status = 401;
     var token;
-    var username = java.lang.System.getProperty("app.username");
-	var password = java.lang.System.getProperty("app.password");
+    var credentials;
+    if (request) {
+    	credentials = {username: request.env.servlet.getServletConfig().getInitParameter("geoserver_username"), password: request.env.servlet.getServletConfig().getInitParameter("geoserver_password")};
+    }
+    if (credentials.username == null) {
+    	credentials = {username: java.lang.System.getProperty("app.username"), password: java.lang.System.getProperty("app.password")};
+    }
 	//if (params.username && params.password) {
-    if (username && password) {
+    if (credentials.username && credentials.password) {
         var url = getLoginUrl(request);
         var client = getClient();
         var exchange = client.request({
@@ -71,8 +82,8 @@ exports.authenticate = function(request) {
             method: "post",
             async: false,
             data: {
-                username: username,
-                password: password
+                username: credentials.username,
+                password: credentials.password
             }
         });
         exchange.wait();

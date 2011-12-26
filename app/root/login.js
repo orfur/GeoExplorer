@@ -19,7 +19,7 @@ exports.app = function(req) {
     return {
         status: status,
         headers: {
-            "Set-Cookie": cookie + ";Path=/"
+            "Set-Cookie": cookie + ";"
         },
         body: []
     };

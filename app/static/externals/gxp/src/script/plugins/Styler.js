@@ -50,7 +50,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      *  do styling through commonly used proxies as all authorization headers
      *  and cookies are shared with all remote sources.  Default is ``true``.
      */
-    sameOriginStyling: true,
+    sameOriginStyling: false,
     
     /** api: config[rasterStyling]
      *  ``Boolean`` If set to true, single-band raster styling will be
@@ -173,16 +173,18 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
                 url = source.url.split("?")
                     .shift().replace(/\/(wms|ows)\/?$/, "/rest/styles");
             }
-//	orfur
-//            if (this.sameOriginStyling) {
-//                // this could be made more robust
-//                // for now, only style for sources with relative url
-//                editableStyles = url.charAt(0) === "/";
-//            } else {
+            /*
+            if (this.sameOriginStyling) {
+                // this could be made more robust
+                // for now, only style for sources with relative url
+            	console.log(url);
+                editableStyles = url.charAt(0) === "/";
+            } else {
+            */
                 editableStyles = true;
-//            }
-// orfur
-            editableStyles = true;
+            //}
+             console.log(url);
+           // editableStyles = true;
             if (editableStyles) {
                 if (this.target.isAuthorized()) {
                     // check if service is available

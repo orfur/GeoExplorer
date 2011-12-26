@@ -1,4 +1,4 @@
-#Thu Dec 08 09:35:57 EET 2011
+#Thu Dec 22 10:39:25 EET 2011
 eclipse.preferences.version=1
 encoding//app/static/externals/gxp/src/script/locale/en.js=UTF-8
 encoding//app/static/externals/gxp/src/script/plugins/AddLayers.js=UTF-8
@@ -9,5 +9,4 @@ encoding//app/static/script/app/GeoExplorer/Composer.js=UTF-8
 encoding//app/static/script/app/locale/en.js=UTF-8
 encoding//app/templates/composer.html=UTF-8
 encoding//app/templates/viewer.html=UTF-8
-encoding//build/geoexplorer/WEB-INF/app/static/script/gxp.js=UTF-8
 encoding/<project>=UTF-8

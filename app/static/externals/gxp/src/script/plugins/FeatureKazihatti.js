@@ -51,17 +51,14 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     {
     	var mapProjCode = this.target.mapPanel.map.projection;
     	var wfsURL = this.wfsURL;
-    	var request, geometryLineString='';
-    	var jsonFormatter =  new OpenLayers.Format.JSON();
+    	var request;
+    	var jsonFormatter =  new OpenLayers.Format.GeoJSON();
     	var mahSokStore = new Ext.data.ArrayStore({
 	        id: 0,
 	        fields: ['YOL_ID','YOL_ISMI','YOL_KAPLAMA_CINSI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI','MAH_SOK']
 		});
-    	Ext.each(feature.geometry.getVertices(), function(node){
-			var latLon = new OpenLayers.LonLat(node.x, node.y);
-			latLon.transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
-			geometryLineString += latLon.lon + " " + latLon.lat + ",";
-		},this);
+    	Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
+    	var transGeom  = feature.geometry.transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
     	request = OpenLayers.Request.GET({
 		    url:    wfsURL,
 		    params: {
@@ -72,20 +69,15 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		    	"outputFormat" : "json",
 		    	"typename" : "UniversalWorkspace:SDE.KARAYOLU",
 		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CI,SHAPE",
-		    	"cql_filter" : "DWITHIN(SHAPE,LINESTRING(" + geometryLineString.slice(0,-1) + "),2,meters)"
+		    	"cql_filter" : "DWITHIN(SHAPE,"+transGeom.components[0].simplify().toString()+",2,meters)"
 		    },
 		    async: false
     	});
-    	Ext.each(jsonFormatter.read(request.responseText).features, function(sokak)
+    	Ext.each(jsonFormatter.read(request.responseText), function(sokak)
 		{
-			if (mahSokStore.find("YOL_ISMI",sokak.properties["YOL_ISMI"])==-1)
+			if (mahSokStore.find("YOL_ISMI",sokak.attributes["YOL_ISMI"])==-1)
 			{
-				mahSokStore.add(new Ext.data.Record({'YOL_ID': sokak.properties["YOL_ID"], 'YOL_ISMI':sokak.properties["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.properties["KAPLAMA_CI"]}));
-				Ext.each(sokak.geometry.coordinates[0],function(loc)
-				{
-					geometryLineString+= loc[0] + " " + loc[1] + ",";
-				}
-				);
+				mahSokStore.add(new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CI"]}));
 				request = OpenLayers.Request.GET({
 					    url:    wfsURL,
 					    params: {
@@ -96,18 +88,18 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     				    	"outputFormat" : "json",
     				    	"typename" : "UniversalWorkspace:SDE.KOYMAHALLE",
     				    	"propertyName" : "ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID",
-    				    	"cql_filter" : "INTERSECTS(SHAPE,LINESTRING("+ geometryLineString.slice(0,-1) +"))"
+    				    	"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")"
     				    },
 					    async: false
 				});
-				Ext.each(jsonFormatter.read(request.responseText).features,function(mah)
+				Ext.each(jsonFormatter.read(request.responseText),function(mah)
 				{
-					var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",sokak.properties["YOL_ID"]));
-					item.data["MAH_ID"] = mah.properties["MAHALLEID"];
-					item.data["MAH_ADI"] = mah.properties["KOYMAHALLEADI"];
-					item.data["ILCE_ID"] = mah.properties["ILCEID"];
-					item.data["ILCE_ADI"] = mah.properties["ILCEADI"];
-					item.data["MAH_SOK"] = mah.properties["KOYMAHALLEADI"]+" : "+item.data["YOL_ISMI"];
+					var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",sokak.attributes["YOL_ID"]));
+					item.data["MAH_ID"] = mah.attributes["MAHALLEID"];
+					item.data["MAH_ADI"] = mah.attributes["KOYMAHALLEADI"];
+					item.data["ILCE_ID"] = mah.attributes["ILCEID"];
+					item.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
+					item.data["MAH_SOK"] = mah.attributes["KOYMAHALLEADI"]+" : "+item.data["YOL_ISMI"];
 				});
 			}    							
 		},this);
@@ -271,8 +263,8 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			                                	url: "http://localhost:8181/GeoImport/",
 			                                	waitMsg: 'Aktarılıyor...',
 		                                		failure: function(form, action) {
-		                                			var geoJsonFormat = new OpenLayers.Format.GeoJSON();
-			                                		var geoCollection = geoJsonFormat.read(action.response.responseText)[0].geometry;
+		                                			var jsonFormatter =  new OpenLayers.Format.GeoJSON();
+			                                		var geoCollection = jsonFormatter.read(action.response.responseText)[0].geometry;
 			                                		geoCollection.transform(new OpenLayers.Projection("EPSG:900915"),new OpenLayers.Projection(mapProjCode));
 			                                		this.target.mapPanel.map.zoomToExtent(geoCollection.getBounds(),true);
 			                                		winUpload.hide();

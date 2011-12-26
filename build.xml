@@ -7,9 +7,10 @@
 
     <property name="build" location="build"/>
     <property name="app.proxy.geoserver" value="http://10.0.0.153:8080/geoserver/"/>
-    <property name="app.username" value="aykome"/>
-    <property name="app.password" value="aykome"/>
+    <property name="app.username" value="admin"/>
+    <property name="app.password" value="geoserver"/>
     <property name="app.port" value="8080"/>
+	<property name="tomcat_folder" value="C:/apache-tomcat-7.0.23/webapps/"/>
 
     <target name="init">
 
@@ -82,7 +83,7 @@
         <war destfile="${build}/${ant.project.name}.war">
             <fileset dir="${build}/${ant.project.name}"/>
         </war>
-    	<copy file="${build}/${ant.project.name}.war" todir="C:/apache-tomcat-7.0.23/webapps/"/>
+    	<copy file="${build}/${ant.project.name}.war" todir="${tomcat_folder}"/>
     </target>
 
     <target name="debug">
@@ -117,6 +118,7 @@
     </target>
 
     <target name="clean" description="remove previous build">
+    	<delete dir="${tomcat_folder}/geoexplorer"/>
         <delete dir="${build}"/>
     </target>
 

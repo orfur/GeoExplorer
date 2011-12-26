@@ -296,6 +296,11 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                     this.enable();
                 }, this);
             },
+            "ready": function(){
+           	 	var combo = this.items.get(0).items.get(0);
+                combo.fireEvent("select", combo, this.stylesStore.getAt(this.stylesStore.findExact("name", this.selectedStyle.get("name"))), this.stylesStore.findExact("name", this.selectedStyle.get("name")));
+                combo.setValue(this.selectedStyle.get("name"));
+            },
             scope: this
         });
 
@@ -707,7 +712,6 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                     this.selectedStyle = record;
                 }
             }
-            
             this.addRulesFieldSet();
             this.createLegend(this.selectedStyle.get("userStyle").rules);
             
@@ -801,6 +805,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
 
         this._ready = true;
         this.fireEvent("ready");
+        
     },
     
     /** private: method[markModified]
@@ -1113,7 +1118,8 @@ gxp.WMSStylesDialog.createGeoServerStylerConfig = function(layerRecord, url) {
         url = layerRecord.get("restUrl");
     }
     if (!url) {
-        url = layer.url.split("?").shift().replace(/\/(wms|ows)\/?$/, "/rest");
+    	//url = "http://admin:geoserver@10.0.0.153:8080/geoserver/rest";
+        url = layer.url.split("?").shift().replace(/\/(wms|ows)\/?$/, "/rest").replace("http://", "http://{username}:{password}@");
     }
     return {
         xtype: "gxp_wmsstylesdialog",
