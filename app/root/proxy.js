@@ -127,7 +127,7 @@ function proxyPass(config) {
     }
     return {
         status: exchange.status,
-        headers: headers,
+        //headers: headers,
         body: new MemoryStream(exchange.contentBytes)
     };
 }

@@ -60,7 +60,10 @@ exports.authenticate = function(request) {
     var params = request.postParams;
     var status = 401;
     var token;
-    if (params.username && params.password) {
+    var username = java.lang.System.getProperty("app.username");
+	var password = java.lang.System.getProperty("app.password");
+	//if (params.username && params.password) {
+    if (username && password) {
         var url = getLoginUrl(request);
         var client = getClient();
         var exchange = client.request({
@@ -68,8 +71,8 @@ exports.authenticate = function(request) {
             method: "post",
             async: false,
             data: {
-                username: params.username,
-                password: params.password
+                username: username,
+                password: password
             }
         });
         exchange.wait();

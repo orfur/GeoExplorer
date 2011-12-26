@@ -53,6 +53,10 @@ body {
     background-image: url(img/silk/add.png);
 }
 
+.x-btn .icon-packageadd {
+    background-image: url(img/silk/package_add.png);
+}
+
 .x-btn .icon-addserver {
     background-image: url(img/silk/map_add.png);
 }

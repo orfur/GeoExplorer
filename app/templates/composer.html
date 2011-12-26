@@ -41,11 +41,12 @@
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
         GeoExt.Lang.set("tr");
-        
+        Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
-            proxy: "proxy/?url=",
+            proxy: "/proxy?url=",
             printService: "/geoserver/pdf/",
+            wfsURL : "http://10.0.0.153:8080/geoserver/wfs",
             about: {
                 title: "Umi Map Test Application",
                 "Amaç": "Universal Mekansal İşlemci ",
@@ -53,10 +54,9 @@
             },
             defaultSourceType: "gxp_wmscsource",
             sources: {
-            	
                 local: {
-                    url: "http://10.0.0.153:8080/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",//"http://geoserver.kocaeli.bel.tr:8090/geoserver/ows", //"/geoserver/ows",
-                    title: "Kurum Katmanları",
+                    url: "http://10.0.0.153:8080/geoserver/ows",
+                    title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },
                 /*
@@ -78,13 +78,14 @@
                 },
                 /*mapbox: {
                     ptype: "gxp_mapboxsource"
-                },*/
+                },
                 ol: {
                     ptype: "gxp_olsource"
-                }
+                }*/
             },
             map: {
-                projection: "EPSG:900913",//"EPSG:102113",
+                //projection: "EPSG:102113",
+                projection: "EPSG:900913",
                 units: "m",
                 maxResolution: 156543.0339,
                 maxExtent: [
@@ -95,10 +96,10 @@
                 {
                 	source: "google",
                     title: "Google Harita",
-                    name: "ROADMAP",
+                    name: "SATELLITE",//"HYBRID",//"ROADMAP",
                     group: "background"
-                }
-                ,{
+                },
+                {
                     source: "ol",
                     group: "background",
                     fixed: true,
@@ -112,4 +113,28 @@
                 zoom: 2
             }
         });
+        
+        
+        function CallzoomToFeature(layerName,objectIDs) {
+        	
+ 			var app = this.app;     	
+        	
+        };
+        
+        function QueryObjectID(layerName,objectIDs) {
+        	
+        	
+        };    
+        
+        function deleteFeature(fid,tableid,buttonid) {
+        	
+        	
+        };
+        
+        function MapExtent(extent) {
+        	
+        	
+        	
+        };
+        
     </script>

@@ -41,7 +41,7 @@ exports.main = function main(args) {
             print();
         } else {
             concat = MERGE.concat(group);
-            //concat = JSMIN.jsmin(concat); //orfur
+            //concat = JSMIN.jsmin(concat);
             outfile = section;
             if (options.outdir) {
                 if (!FS.isDirectory(options.outdir)) {

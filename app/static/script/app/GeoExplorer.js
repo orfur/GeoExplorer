@@ -164,12 +164,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     }, 
 
     loadConfig: function(config) {
-    	
         var mapUrl = window.location.hash.substr(1);
         var match = mapUrl.match(/^maps\/(\d+)$/);
         if (match) {
             this.id = Number(match[1]);
-            
             OpenLayers.Request.GET({
                 url: mapUrl,
                 success: function(request) {
@@ -202,16 +200,46 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 scope: this
             });
         } else {
-        	
-            var query = Ext.urlDecode(document.location.search.substr(1));
-            if (query && query.q) {
-                var queryConfig = Ext.util.JSON.decode(query.q);
-                Ext.apply(config, queryConfig);
-                
-            }
-            this.applyConfig(config);
+        	var kurumID = this.getKurumID();
+        	if (kurumID != null)
+        	{
+        		this.id = kurumID; 
+        		OpenLayers.Request.GET({
+                     url: "maps/"+kurumID,
+                     success: function(request) {
+                         var addConfig = Ext.util.JSON.decode(request.responseText);
+                         this.applyConfig(Ext.applyIf(addConfig, config));
+                     },
+                     failure: function(request) {
+                         var obj;
+                         try {
+                             obj = Ext.util.JSON.decode(request.responseText);
+                         } catch (err) {
+                             // pass
+                         }
+                         if (request.status == 404)
+                         {
+                        	 this.on({
+                                 ready: function() {
+                                	 this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"POST");
+                                 }
+                        	 });
+                         }
+                         this.applyConfig(config);
+                     },
+                     scope: this
+                 });
+        	}
+        	else
+        	{
+	            var query = Ext.urlDecode(document.location.search.substr(1));
+	            if (query && query.q) {
+	                var queryConfig = Ext.util.JSON.decode(query.q);
+	                Ext.apply(config, queryConfig);
+	            }
+	            this.applyConfig(config);
+        	}
         }
-        
         
     },
     
@@ -223,6 +251,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             icon: Ext.MessageBox.WARNING
         });
         
+    },
+    
+    getKurumID: function() {
+    	//TODO: Burasi doldurulacak
+    	return 12;
     },
     
     /** private: method[initPortal]
@@ -259,6 +292,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             disabled.each(function(item) {
                 item.disable();
             });
+            westPanel.collapse();
         });
 
         var googleEarthPanel = new gxp.GoogleEarthPanel({
@@ -361,16 +395,17 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      *
      * Saves the map config and displays the URL in a window.
      */ 
-    save: function(callback, scope) {
+    save: function(callback, scope, method) {
         var configStr = Ext.util.JSON.encode(this.getState());
-        var method, url;
-        if (this.id) {
-            method = "PUT";
+        var url;
+        //var method, url;
+        // if (this.id) {
+        //    method = "PUT";
             url = "maps/" + this.id;
-        } else {
-            method = "POST";
-            url = "maps";
-        }
+        //} else {
+        //    method = "POST";
+        //    url = "maps";
+        //}
         OpenLayers.Request.issue({
             method: method,
             url: url,
@@ -394,7 +429,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             var mapId = config.id;
             if (mapId) {
                 this.id = mapId;
-                window.location.hash = "#maps/" + mapId;
+                //window.location.hash = "#maps/" + mapId;
             }
         } else {
             throw this.saveErrorText + request.responseText;
@@ -404,6 +439,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     /** private: method[showUrl]
      */
     showUrl: function() {
+    	Ext.Msg.alert('Kaydedildi', 'Harita basariyla kaydedildi!');
+    	/*
         var win = new Ext.Window({
             title: this.bookmarkText,
             layout: 'form',
@@ -412,7 +449,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             bodyStyle: "padding: 5px",
             width: 300,
             items: [{
-                xtype: 'textfield',
+                xtype: 'label',
                 fieldLabel: this.permakinkText,
                 readOnly: true,
                 anchor: "100%",
@@ -422,6 +459,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         win.show();
         win.items.first().selectText();
+        */
     },
     
     /** api: method[getBookmark]
@@ -442,7 +480,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         
         return url;
     },
-
     /** private: method[displayAppInfo]
      * Display an informational dialog about the application.
      */

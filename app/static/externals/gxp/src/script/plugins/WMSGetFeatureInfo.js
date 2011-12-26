@@ -90,6 +90,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
 
     /** api: method[addActions]
      */
+    
     addActions: function() {
         this.popupCache = {};
         

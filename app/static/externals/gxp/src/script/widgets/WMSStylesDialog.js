@@ -1115,6 +1115,7 @@ gxp.WMSStylesDialog.createGeoServerStylerConfig = function(layerRecord, url) {
     if (!url) {
         url = layer.url.split("?").shift().replace(/\/(wms|ows)\/?$/, "/rest");
     }
+    url = "http://admin:geoserver@10.0.0.153:8080/geoserver/rest";
     return {
         xtype: "gxp_wmsstylesdialog",
         layerRecord: layerRecord,

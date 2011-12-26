@@ -184,6 +184,10 @@
     background-image: url(img/silk/server_add.png);
 }
 
+.x-btn .gxp-icon-addpackage {
+    background-image: url(img/silk/package_add.png);
+}
+
 /* gxp_panmap */
 .x-btn .gxp-icon-pan, .x-tree-node .gxp-icon-pan {
     background-image: url(img/geosilk/pan.png);

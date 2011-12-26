@@ -107,14 +107,17 @@ var handlers = {
         if (isAuthorized(env)) {
             var id = getId(env);
             if (id !== null) {
+            /*
                 resp = createResponse({error: "Can't POST to map " + id}, 405);
             } else {
+            */
                 var config = getConfig(env);
                 if (!config) {
                     resp = createResponse({error: "Bad map config."}, 400);
                 } else {
                     // return the map id
-                    resp = createResponse(createMap(config, env));
+                    //resp = createResponse(createMap(config, env));
+                    resp = createResponse(createMap(id, config, env));
                 }
             }
         } else {
@@ -189,7 +192,7 @@ var getMapList = exports.getMapList = function(request) {
     return {maps: items};
 };
 
-var createMap = exports.createMap = function(config, request) {
+var createMap = exports.createMap = function(id, config, request) {
     if (typeof config === "string") {
         config = JSON.parse(config);
     }
@@ -202,16 +205,19 @@ var createMap = exports.createMap = function(config, request) {
     try {
         // store the new map config
         var prep = connection.prepareStatement(
-            "INSERT INTO maps (config) VALUES (?);"
+            "INSERT INTO maps (id, config) VALUES (?, ?);"
         );
-        prep.setString(1, config);
+        prep.setInt(1, id);
+        prep.setString(2, config);
         prep.executeUpdate();
         // get the map id
+        /*
         var statement = connection.createStatement();
         var results = statement.executeQuery("SELECT last_insert_rowid() AS id;");
         results.next();
         var id = Number(results.getInt("id"));
         results.close();
+        */
     } finally {
         connection.close();
     }

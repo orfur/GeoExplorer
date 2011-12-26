@@ -43,7 +43,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             this.authorizedRoles = [];
         } else {
             // user has authenticated or auth back-end is not available
-            this.authorizedRoles = ["ROLE_ADMINISTRATOR","ROLE_READER"];
+            this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
         }
         // should not be persisted or accessed again
         delete config.authStatus;
@@ -80,34 +80,34 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_print",
                 customParams: {outputFilename: 'GeoExplorer-print'},
                 printService: config.printService,
-                actionTarget: {target: "paneltbar", index: 2}
+                actionTarget: {target: "paneltbar", index: 3}
             },
             {
                 ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 4}
+                actionTarget: {target: "paneltbar", index: 5}
             },
             {
                 ptype: "gxp_zoom",
                 toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 5}
-            },
-            {
-                ptype: "gxp_navigationhistory",
                 actionTarget: {target: "paneltbar", index: 6}
             },
             {
-                ptype: "gxp_zoomtoextent",
+                ptype: "gxp_navigationhistory",
                 actionTarget: {target: "paneltbar", index: 7}
+            },
+            {
+                ptype: "gxp_zoomtoextent",
+                actionTarget: {target: "paneltbar", index: 8}
             }, 
             {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
                 controlOptions: {immediate: true},
-                actionTarget: {target: "paneltbar", index: 10}
+                actionTarget: {target: "paneltbar", index: 11}
             },
             {
                 deneme : "adfsdgfs",
             	ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 11}
+                actionTarget: {target: "paneltbar", index: 12}
             },
             /*
             {
@@ -124,12 +124,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_featurekazihatti",
                 wfsURL: config.wfsURL,
                 toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 13}
-            },
-            {
-                ptype: "gxp_kocaeligissorgu",
-                toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 16}
+                actionTarget: {target: "paneltbar", index: 14}
             }
         ];
         
@@ -238,7 +233,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             panel.buttons[0].disable();
             panel.getForm().submit({
                 success: function(form, action) {
-                    this.authorizedRoles = ["ROLE_ADMINISTRATOR","ROLE_READER"];//["ROLE_ADMINISTRATOR"];
+                    this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
                     this.fireEvent("loginchanged");
                     Ext.getCmp('paneltbar').items.each(function(tool) {
                         if (tool.needsAuthorization === true) {
@@ -276,13 +271,62 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     },
 
     /**
+     * private: method[applyLoginState]
+     * Attach a handler to the login button and set its text.
+     */
+    applyLoginState: function(iconCls, text, handler, scope) {
+        this.loginButton.setIconClass(iconCls);
+        this.loginButton.setText(text);
+        this.loginButton.setHandler(handler, scope);
+    },
+
+    /** private: method[showLogin]
+     *  Show the login button.
+     */
+    showLogin: function() {
+        var text = this.loginText;
+        var handler = this.showLoginDialog;
+        this.applyLoginState('login', text, handler, this);
+    },
+
+    /** private: method[showLogout]
+     *  Show the logout button.
+     */
+    showLogout: function(user) {
+        var text = new Ext.Template(this.logoutText).applyTemplate({user: user});
+        var handler = this.logout;
+        this.applyLoginState('logout', text, handler, this);
+    },
+
+    /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
-        tools.unshift("-");
+
+        //this.loginButton = new Ext.Button();
+        //tools.push(['->', this.loginButton]);
+
+        // unauthorized, show login button
+        //if (this.authorizedRoles.length === 0) {
+        //    this.showLogin();
+        //} else {
+        //    var user = this.getCookieValue(this.cookieParamName);
+        //    if (user !== null) {
+        //        this.showLogout(user);
+        //    }
+        //}
         /*
+        var aboutButton = new Ext.Button({
+            text: this.appInfoText,
+            iconCls: "icon-geoexplorer",
+            handler: this.displayAppInfo,
+            scope: this
+        });
+        */
+
+        tools.unshift("-");
         tools.unshift(new Ext.Button({
             tooltip: this.exportMapText,
             needsAuthorization: true,
@@ -293,14 +337,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             scope: this,
             iconCls: 'icon-export'
         }));
-        */
         tools.unshift(new Ext.Button({
             tooltip: this.saveMapText,
             needsAuthorization: true,
             disabled: !this.isAuthorized(),
             handler: function() {
-                //this.save(this.showUrl);
-            	this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"PUT");
+                this.save(this.showUrl);
             },
             scope: this,
             iconCls: "icon-save"

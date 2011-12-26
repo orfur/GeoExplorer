@@ -96,6 +96,42 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
               },
               scope: this
           });
+          
+          Ext.Ajax.on(
+          		"CallzoomToFeature",
+          		function(ao_layerName,as_cqlQuery){
+          			console.log("CallzoomToFeature: layerName=" + ao_layerName + " CQL_FILTER=" + as_cqlQuery );
+          			var lo_layer = this.getLayer(ao_layerName);
+          			if(lo_layer!=null)
+          				this.queryLayer(lo_layer, as_cqlQuery,true);
+          			else
+          				alert("Katman bulunamadı.");
+                  },
+                  this
+          );
+          Ext.Ajax.on(
+        		"QueryObjectID",
+        		function(ao_layerName,as_objectIDs){
+        			console.log("QueryObjectID: layerName=" + ao_layerName + " ObjectIDs=" + as_objectIDs );
+        			var lo_layer = this.getLayer(ao_layerName);
+        			if(lo_layer!=null)
+        			{
+        				var ls_featureIdsQuery = this.getQueryObjectIDs(lo_layer.data.name,as_objectIDs); //featureid filter olusturuluyor. (, ile ayrılmıs objectidler geliyor.)
+        				this.queryLayer(lo_layer, ls_featureIdsQuery,false);
+        			}
+        			else
+        				alert("Katman bulunamadı.");
+                },
+                this
+            );
+          Ext.Ajax.on(
+          		"MapExtent",
+          		function(extent){
+          			console.log("MapExtent:" + extent);
+          			this.target.mapPanel.map.zoomToExtent(new OpenLayers.Bounds.fromString(extent,this.target.mapPanel.map.projection),true);
+                  },
+                  this
+              );
     	  
     	  
       },
@@ -122,26 +158,26 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			                	if(index>0){
 			                		 this.enumAdresDeger=this.EnumAdres.MAHALLE;
 			                		this.getAddressDataset(this.SERVICE_URL + this.MAHALLELER + "ilce_kodu="+ this.cbx_ilce.getValue());
-			                		this.queryWFSLayer(this.layers.ilce , "ILCEID=" + this.cbx_ilce.getValue());
+			                		this.queryLayer(this.layers.ilce , "ILCEID=" + this.cbx_ilce.getValue(),true);
 			                	}},this);
 	                
 	                this.cbx_mahalle.on('select', function(box, record, index) {
 			                	if(index>0){
 			                		 this.enumAdresDeger=this.EnumAdres.SOKAK;
 			                		this.getAddressDataset(this.SERVICE_URL + this.SOKAKLAR + "ilce_kodu="+ this.cbx_ilce.getValue() + "&mahalle_kodu=" + this.cbx_mahalle.getValue());
-			                		this.queryWFSLayer(this.layers.mahalle , "MAHALLEID=" + this.cbx_mahalle.getValue());
+			                		this.queryLayer(this.layers.mahalle , "MAHALLEID=" + this.cbx_mahalle.getValue(),true);
 			                	}},this);
 	                
 	                this.cbx_sokak.on('select', function(box, record, index) {
 			                	if(index>0){
 			                		this.enumAdresDeger=this.EnumAdres.KAPI;
 			                		this.getAddressDataset(this.SERVICE_URL + this.KAPILAR + "CaddeSokakID=" + this.cbx_sokak.getValue());
-			                		this.queryWFSLayer(this.layers.sokak , "CSBMKOD=" + this.cbx_sokak.getValue());
+			                		this.queryLayer(this.layers.sokak , "CSBMKOD=" + this.cbx_sokak.getValue(),true);
 			                	}},this);
 	                
 	                this.cbx_kapi.on('select', function(box, record, index) {
 			                	if(index>0){
-			                		this.queryWFSLayer(this.layers.kapi , "NVI_BINAKOD=" + this.cbx_kapi.getValue());
+			                		this.queryLayer(this.layers.kapi , "NVI_BINAKOD=" + this.cbx_kapi.getValue(),true);
 			                	}},this);
 	                
 	                this.createForm([this.cbx_ilce, this.cbx_mahalle,this.cbx_sokak,this.cbx_kapi]);
@@ -179,6 +215,43 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	        }); 
 	        
 	        return layers;
+    },
+    getLayer: function(layername)
+    {
+	        var ds = this.target.layerSources.local.store.data.items;
+	        
+	        for(var i=0;i<ds.length;i++)
+	        {
+	        	var keywords = ds[i].data.keywords;
+	        	for(var j=0;j<keywords.length;j++)
+	        	{
+	            	  if(keywords[j] == layername)
+	            		  return ds[i];
+	        		
+	        	}
+	        	
+	        }
+	        
+	        return null;
+    },
+    getQueryObjectIDs: function(as_layerName,as_queryObjectIDs)
+    {
+			var lo_tempArray = as_layerName.split(":");
+			var ls_layerNameWOWorkspaceName = "";
+			var ls_fidQuery = "featureid=";
+			if(lo_tempArray.length>1)
+			{
+				ls_layerNameWOWorkspaceName = lo_tempArray[1];
+				var lo_tempArrayFID = as_queryObjectIDs.split(",");
+				for(var i=0;i<lo_tempArrayFID.length;i++)
+				{
+					ls_fidQuery += ls_layerNameWOWorkspaceName +"."+ lo_tempArrayFID[i];		
+					if(i!=lo_tempArrayFID.length-1)
+						ls_fidQuery += ",";
+				} 
+				
+			}
+			return ls_fidQuery;
     },
     createForm: function(ao_controlItems)
     {
@@ -255,7 +328,8 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     											 + "&outputFormat=json"
     											 + "&propertyName=SHAPE"
     											 + "&TYPENAME=" + layerTemp.params.LAYERS 
-    											 + "&CQL_FILTER=" + as_cqlFilter;
+    											 + "&" + as_cqlFilter;
+    											 //+ "&CQL_FILTER=" + as_cqlFilter;
     	
 		var lo_request = OpenLayers.Request.GET({
 		    url: ls_wfsURL,
@@ -270,6 +344,14 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 		
 		if(this.featureLayer.features.length>0)
 			this.target.mapPanel.map.zoomToExtent(this.getFCollectionMaxExtent(this.featureLayer.features),true);//lo_feature.geometry.getBounds(), true);
+			
+    },
+    queryLayer: function(ao_layer,as_Filter,isCqlFilter)
+    {
+    	if(isCqlFilter)
+    		this.queryWFSLayer(ao_layer,"&CQL_FILTER=" + as_Filter);
+    	else
+    		this.queryWFSLayer(ao_layer,as_Filter);
 			
     },
     getAddressDataset: function(serviceUrl) {

@@ -182,6 +182,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
                 editableStyles = true;
 //            }
 // orfur
+            url = "http://admin:geoserver@10.0.0.153:8080/geoserver/rest/styles";
             editableStyles = true;
             if (editableStyles) {
                 if (this.target.isAuthorized()) {

@@ -5,7 +5,8 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_featurekazihatti",
     outputTarget: "map",
     popupCache: null,
-    wfsURL: "http://10.0.0.153:8080/geoserver/wfs",
+    wfsURL: null,
+    wfsLayers:"UniversalWorkspace:SDE.KOYMAHALLE,UniversalWorkspace:SDE.KARAYOLU,UniversalWorkspace:SDE.KOCAELI_KAPI,UniversalWorkspace:SDE.KOCAELI_YAPI,UniversalWorkspace:SDE.KAZIHATTI",
     kaziActionTip: "Kazi hattı oluştur",
     popupTitle: "Kazi hattı oluştur",
     tooltip: "Kazi hattı oluştur",
@@ -45,8 +46,85 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
                 },
                 this
         );
+        Ext.Ajax.on(
+          		"deleteFeature",//kazihatti katmanindan belirtilen nesneleri siler.
+          		function(fid,tableid,buttonid){
+          			console.log("deleteFeature: fid=" + fid);
+          			var lo_layer = this.getLayer("kazihatti");
+          			if(lo_layer!=null)
+          			{
+            			var vectorFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.MultiLineString(null));
+            			vectorFeature.fid = this.createObjectID(lo_layer.data.name,fid);
+            			vectorFeature.state = OpenLayers.State.DELETE;
+            			this.vectorLayer.addFeatures(vectorFeature);
+            			this.saveStrategy.save();
+            			Ext.Ajax.fireEvent("refreshFLayer",'kazihatti'); 
+            			//deleteSuccess(true,tableid,buttonid);
+          			}
+          			else
+          				alert("Katman bulunamadı.");
+                  },
+                  this
+          );
+        
+        Ext.Ajax.on(
+          		"refreshFLayer",
+          		function(layername){
+        			var lo_layer = this.getLayer(layername);
+        			if(lo_layer!=null)
+        			{
+        				var layers = this.target.mapPanel.map.layers;
+        				for(var i=0;i<layers.length;i++)
+        				{
+        				  var ls_tempLayerName = layers[i].name; 
+        				  if(lo_layer.data.layer.name == ls_tempLayerName)
+        					  layers[i].redraw(true);
+        				
+        				}
+        				
+        			}
+        		},
+                this
+          );
+
     },
-    
+    getLayer: function(layername)
+    {
+	        var ds = this.target.layerSources.local.store.data.items;
+	        
+	        for(var i=0;i<ds.length;i++)
+	        {
+	        	var keywords = ds[i].data.keywords;
+	        	for(var j=0;j<keywords.length;j++)
+	        	{
+	            	  if(keywords[j] == layername)
+	            		  return ds[i];
+	        		
+	        	}
+	        	
+	        }
+	        
+	        return null;
+    },
+    createObjectID: function(as_layerName,as_queryObjectIDs)
+    {
+			var lo_tempArray = as_layerName.split(":");
+			var ls_layerNameWOWorkspaceName = "";
+			var ls_fidQuery = "";//"featureid=";
+			if(lo_tempArray.length>1)
+			{
+				ls_layerNameWOWorkspaceName = lo_tempArray[1];
+				var lo_tempArrayFID = as_queryObjectIDs.split(",");
+				for(var i=0;i<lo_tempArrayFID.length;i++)
+				{
+					ls_fidQuery += ls_layerNameWOWorkspaceName +"."+ lo_tempArrayFID[i];		
+					if(i!=lo_tempArrayFID.length-1)
+						ls_fidQuery += ",";
+				} 
+				
+			}
+			return ls_fidQuery;
+    },
     selectRegion: function(feature)
     {
     	var mapProjCode = this.target.mapPanel.map.projection;
@@ -57,7 +135,6 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	        id: 0,
 	        fields: ['YOL_ID','YOL_ISMI','YOL_KAPLAMA_CINSI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI','MAH_SOK']
 		});
-    	Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
     	Ext.each(feature.geometry.getVertices(), function(node){
 			var latLon = new OpenLayers.LonLat(node.x, node.y);
 			latLon.transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
@@ -181,16 +258,67 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     
     addActions: function() {
     	var mapProjCode = this.target.mapPanel.map.projection;
+    	var wfsLayers = this.wfsLayers;
     	this.saveStrategy = new OpenLayers.Strategy.Save();
 		//this.saveStrategy.events.register('start', null, saveStart);
 		this.saveStrategy.events.register('success', null, function(event) {
-			//alert('SaveStrategy: Changes saved.');
+			 var gisUrl="";
 			 var response = event.response; 
-			 //var features = response.features;
 			 var insertids = response.insertIds;
+			 var fidsString = "";
 			 for(var i=0;i<insertids.length;i++)
-				 console.log(insertids[i]);
-
+			 {
+				 
+			        Ext.each(this.layer.features, function(feature)
+			        {
+			        
+			        	if(feature.fid==insertids[i])
+			        	{
+			        		
+			        		gisUrl+=feature.attributes["ILCE_ID"]!=null?feature.attributes["ILCE_ID"]:0;
+			        		gisUrl+= "|"; 
+			        		gisUrl+=feature.attributes["ILCE_ADI"]!=null?feature.attributes["ILCE_ADI"]:"";
+			        		gisUrl+= "|"; 
+			        		gisUrl+=feature.attributes["MAH_ID"]!=null?feature.attributes["MAH_ID"]:0;
+			        		gisUrl+= "|"; 
+			        		gisUrl+=feature.attributes["MAH_ADI"]!=null?feature.attributes["MAH_ADI"]:"";
+			        		gisUrl+= "|"; 
+			        		gisUrl+=feature.attributes["YOL_ID"]!=null?feature.attributes["YOL_ID"]:0;
+			        		gisUrl+= "|"; 
+			        		gisUrl+=feature.attributes["YOL_ISMI"]!=null?feature.attributes["YOL_ISMI"]:"";
+			        		gisUrl+= "|"; 
+			        		gisUrl+=feature.attributes["YOL_KAPLAMA_CINSI"];
+			        		gisUrl+= "|"; 
+			        		gisUrl+= Math.round( feature.geometry.getLength()*100)/100;
+			        		
+			        		if(i!=insertids.length-1)
+			        			gisUrl+= "#";
+			        	}
+			        		
+			        });
+			        
+			        if(i==insertids.length-1)
+			        	fidsString  +=insertids[i];
+					else
+						fidsString  +=insertids[i] +",";
+			        
+			 }
+			 	
+			    var mapExtent = this.layer.map.getExtent();
+			    var ls_printUrl = ""; 
+			    ls_printUrl += this.layer.protocol.url.replace(/wfs/gi,"wms") + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=" + mapProjCode+ "&format_options=layout:legendkocaeli";
+			    ls_printUrl += "&BBOX=" + mapExtent.toString();
+			    ls_printUrl += "&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=" + wfsLayers;
+			    ls_printUrl += "&WIDTH="+this.layer.map.size.w+ "&HEIGHT="+ this.layer.map.size.h +"&TILED=true&TRANSPARENT=TRUE&featureid=" + fidsString;
+			    
+		        console.log(gisUrl);
+		        console.log(ls_printUrl);
+				 
+				 
+			 //setGisData(stringField,gisUrl,ls_printUrl);
+			 
+			 
+			 
 		});
 		//this.saveStrategy.events.register('fail', null, saveFail);
 		this.vectorLayer = new OpenLayers.Layer.Vector(this.id, {
@@ -269,7 +397,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			                        		console.log("form is valid");
 			                        		frmUpload.form.submit(
 			                                {
-			                                	url: "http://10.0.0.153:8080/GeoImport/",
+			                                	url: "http://localhost:8181/GeoImport/",
 			                                	waitMsg: 'Aktarılıyor...',
 		                                		failure: function(form, action) {
 		                                			var geoJsonFormat = new OpenLayers.Format.GeoJSON();
@@ -311,7 +439,8 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            menuText: "Kazı hatlarını kaydet",
 	            iconCls: "gxp-icon-featurekazihattisave",
 	            handler: function(){ 
-	            	this.saveStrategy.save()
+	            	//if(hasGrid(gisTable)) //mis function (tablo acikmi kontrolu)
+	            	this.saveStrategy.save();
 	            },
 	            scope: this,
 	            map: this.target.mapPanel.map
