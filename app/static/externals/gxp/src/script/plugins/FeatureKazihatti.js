@@ -49,7 +49,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
         Ext.Ajax.on(
           		"deleteFeature",//kazihatti katmanindan belirtilen nesneleri siler.
           		function(fid,tableid,buttonid){
-          			console.log("deleteFeature: fid=" + fid);
+          			//console.log("deleteFeature: fid=" + fid);
           			var lo_layer = this.getLayer("kazihatti");
           			if(lo_layer!=null)
           			{
@@ -135,8 +135,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	        id: 0,
 	        fields: ['YOL_ID','YOL_ISMI','YOL_KAPLAMA_CINSI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI','MAH_SOK']
 		});
-    	Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
-    	var transGeom  = feature.geometry.transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
+    	var transGeom  = feature.geometry.clone().transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
     	request = OpenLayers.Request.GET({
 		    url:    wfsURL,
 		    params: {
@@ -303,8 +302,8 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			    ls_printUrl += "&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=" + wfsLayers;
 			    ls_printUrl += "&WIDTH="+this.layer.map.size.w+ "&HEIGHT="+ this.layer.map.size.h +"&TILED=true&TRANSPARENT=TRUE&featureid=" + fidsString;
 			    
-		        console.log(gisUrl);
-		        console.log(ls_printUrl);
+		        //console.log(gisUrl);
+		        //console.log(ls_printUrl);
 				 
 				 
 			 //setGisData(stringField,gisUrl,ls_printUrl);
@@ -313,6 +312,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			 
 		});
 		//this.saveStrategy.events.register('fail', null, saveFail);
+		Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
 		this.vectorLayer = new OpenLayers.Layer.Vector(this.id, {
 			strategies: [this.saveStrategy],
 	        displayInLayerSwitcher: false,
@@ -386,7 +386,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			                        formBind: true,
 			                        handler: function(){
 			                        	if (frmUpload.getForm().isValid()) {
-			                        		console.log("form is valid");
+			                        		//console.log("form is valid");
 			                        		frmUpload.form.submit(
 			                                {
 			                                	url: "http://localhost:8181/GeoImport/",

@@ -106,10 +106,10 @@ GeoExt.Lang.add("tr", {
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
-        previousMenuText: "Önceki Harita Cercevesine Git",
-        nextMenuText: "Sonraki Harita Çercevesine Git",
-        previousTooltip: "Önceki Harita Çercevesine Git",
-        nextTooltip: "Sonraki Harita Çercevesine Git"
+        previousMenuText: "Önceki Görünüme Git",
+        nextMenuText: "Sonraki Görünüme Git",
+        previousTooltip: "Önceki Görünüme Git",
+        nextTooltip: "Sonraki Görünüme Git"
     },
 
     "gxp.plugins.OSMSource.prototype": {
@@ -176,13 +176,13 @@ GeoExt.Lang.add("tr", {
     },
     
     "gxp.plugins.ZoomToDataExtent.prototype": {
-        menuText: "Katman extent'ine git",
-        tooltip: "Katman extent'ine git"
+        menuText: "Katmana Yaklaş",
+        tooltip: "Katmana Yaklaş"
     },
 
     "gxp.plugins.ZoomToLayerExtent.prototype": {
-        menuText: "Katman extent'ine git",
-        tooltip: "Katman extent'ine git"
+        menuText: "Katmana Yaklaş",
+        tooltip: "Katmana Yaklaş"
     },
     
     "gxp.plugins.ZoomToSelectedFeatures.prototype": {

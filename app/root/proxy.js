@@ -51,15 +51,19 @@ var getUrlProps = exports.getUrlProps = function(url) {
             // https://github.com/ringo/ringojs/issues/issue/121
             // but, it could make sense to keep it here as well
             [username, password] = userInfo.split(":");
-            if (request.env.servlet.getServletConfig().getInitParameter("geoserver_username")!=null) {
-            	username = username.replace("{username}",request.env.servlet.getServletConfig().getInitParameter("geoserver_username"));
-            	password = password.replace("{password}",request.env.servlet.getServletConfig().getInitParameter("geoserver_password"));
-            }else if(java.lang.System.getProperty("app.username")!=null)
-            {
-            	username = username.replace("{username}",java.lang.System.getProperty("app.username"));
-            	password = password.replace("{password}",java.lang.System.getProperty("app.password"));
-            }
             url = url.replace(userInfo + "@", "");
+        }
+        else
+        {
+        	if (request.env.servlet.getServletConfig().getInitParameter("geoserver_username")!=null && url.indexOf("geoserver")) {
+            	username = request.env.servlet.getServletConfig().getInitParameter("geoserver_username");
+            	password = request.env.servlet.getServletConfig().getInitParameter("geoserver_password");
+            }else if(java.lang.System.getProperty("app.username")!=null && url.indexOf("geoserver"))
+            {
+            	username = java.lang.System.getProperty("app.username");
+            	password = java.lang.System.getProperty("app.password");
+            }
+        	url = url.replace("http://" + "http://"+username+":"+password+"@", "");
         }
         var port = o.getPort();
         if (port < 0) {

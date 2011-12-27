@@ -183,7 +183,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
             */
                 editableStyles = true;
             //}
-             console.log(url);
+             //console.log(url);
            // editableStyles = true;
             if (editableStyles) {
                 if (this.target.isAuthorized()) {
