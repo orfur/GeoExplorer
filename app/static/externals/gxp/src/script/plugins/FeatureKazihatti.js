@@ -58,8 +58,13 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
             			vectorFeature.state = OpenLayers.State.DELETE;
             			this.vectorLayer.addFeatures(vectorFeature);
             			this.saveStrategy.save();
-            			Ext.Ajax.fireEvent("refreshFLayer",'kazihatti'); 
-            			//deleteSuccess(true,tableid,buttonid);
+            			Ext.Ajax.fireEvent("refreshFLayer",'kazihatti');
+            			try
+            			{
+            				window.parent.deleteSuccess(true,tableid,buttonid);
+            			}
+            			catch(err)
+            			{alert("deleteSucces cağrılamadı");}
           			}
           			else
           				alert("Katman bulunamadı.");
@@ -266,6 +271,9 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			        
 			        	if(feature.fid==insertids[i])
 			        	{
+			        		var li_dotIndex = feature.fid.lastIndexOf(".");
+			        		
+			        		gisUrl+=feature.fid.substr(li_dotIndex+1) + "|";
 			        		
 			        		gisUrl+=feature.attributes["ILCE_ID"]!=null?feature.attributes["ILCE_ID"]:0;
 			        		gisUrl+= "|"; 
@@ -296,19 +304,28 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			        
 			 }
 			 	
-			    var mapExtent = this.layer.map.getExtent();
-			    var ls_printUrl = ""; 
-			    ls_printUrl += this.layer.protocol.url.replace(/wfs/gi,"wms") + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=" + mapProjCode+ "&format_options=layout:legendkocaeli";
-			    ls_printUrl += "&BBOX=" + mapExtent.toString();
-			    ls_printUrl += "&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=" + wfsLayers;
-			    ls_printUrl += "&WIDTH="+this.layer.map.size.w+ "&HEIGHT="+ this.layer.map.size.h +"&TILED=true&TRANSPARENT=TRUE&featureid=" + fidsString;
-			    
-		        //console.log(gisUrl);
-		        //console.log(ls_printUrl);
-				 
-				 
-			 //setGisData(stringField,gisUrl,ls_printUrl);
-			 
+			 if(gisUrl.length>0)
+		     {
+				    var mapExtent = this.layer.map.getExtent();
+				    var ls_printUrl = ""; 
+				    ls_printUrl += this.layer.protocol.url.replace(/wfs/gi,"wms") + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=" + mapProjCode+ "&format_options=layout:legendkocaeli";
+				    ls_printUrl += "&BBOX=" + mapExtent.toString();
+				    ls_printUrl += "&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=" + wfsLayers;
+				    ls_printUrl += "&WIDTH="+this.layer.map.size.w+ "&HEIGHT="+ this.layer.map.size.h +"&TILED=true&TRANSPARENT=TRUE&featureid=" + fidsString;
+				    
+			        console.log(gisUrl);
+			        console.log(ls_printUrl);
+					 
+			      try
+			      {
+			    	  window.parent.setGisData("returnAddress",gisUrl,ls_printUrl);	//mis event (datagrid adres doldurulan form)
+			      }
+			      catch(err)
+			      {
+			    	  alert("AdresGrid Bulunamadi");
+			    	  
+			      }
+		      }
 			 
 			 
 		});
@@ -432,8 +449,16 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            menuText: "Kazı hatlarını kaydet",
 	            iconCls: "gxp-icon-featurekazihattisave",
 	            handler: function(){ 
-	            	//if(hasGrid(gisTable)) //mis function (tablo acikmi kontrolu)
-	            	this.saveStrategy.save();
+	            	try
+	            	{
+		            	if(window.parent.hasGrid("gisTable")) //mis function (tablo acikmi kontrolu)
+		            		this.saveStrategy.save();
+		            	else
+		            		alert("Gis Adress Tablosu bulunamadı");
+	            	}
+	            	catch (err) {
+	            		alert("Gis Adress Tablosu bulunamadı");
+	            	}
 	            },
 	            scope: this,
 	            map: this.target.mapPanel.map
