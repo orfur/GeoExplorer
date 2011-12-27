@@ -34,13 +34,13 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for layer properties menu item (i18n).
      */
-    menuText: "Layer Properties",
+    menuText: "Katman Özellikleri",
 
     /** api: config[toolTip]
      *  ``String``
      *  Text for layer properties action tooltip (i18n).
      */
-    toolTip: "Layer Properties",
+    toolTip: "Katman Özellikleri",
     
     /** api: config[layerPanelConfig]
      *  ``Object`` Additional configuration options for the layer type specific

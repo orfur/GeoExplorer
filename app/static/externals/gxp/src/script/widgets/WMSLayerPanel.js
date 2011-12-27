@@ -95,19 +95,19 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     imageFormats: /png|gif|jpe?g/i,
     
     /** i18n */
-    aboutText: "About",
-    titleText: "Title",
-    nameText: "Name",
-    descriptionText: "Description",
-    displayText: "Display",
-    opacityText: "Opacity",
+    aboutText: "Hakkında",
+    titleText: "Başlık",
+    nameText: "İsim",
+    descriptionText: "Açıklama",
+    displayText: "Görünüm",
+    opacityText: "Görünürlük",
     formatText: "Format",
-    infoFormatText: "Info format",
-    infoFormatEmptyText: "Select a format",
-    transparentText: "Transparent",
-    cacheText: "Cache",
-    cacheFieldText: "Use cached version",
-    stylesText: "Styles",
+    infoFormatText: "Bilgi Formatı",
+    infoFormatEmptyText: "Bir Format Seçin", 
+    transparentText: "Saydamlık",
+    cacheText: "Ön Bellek",
+    cacheFieldText: "Ön Bellekteki Versiyonu Kullan",
+    stylesText: "Semboller",
     
     initComponent: function() {
         
