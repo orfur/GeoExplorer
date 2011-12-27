@@ -103,7 +103,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     opacityText: "Opacity",
     formatText: "Format",
     infoFormatText: "Info format",
-    infoFormatEmptyText: "Select a format",
+    infoFormatEmptyText: "Select a format", 
     transparentText: "Transparent",
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
@@ -131,7 +131,11 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         // only add the Styles panel if we know for sure that we have styles
         if (this.styling && gxp.WMSStylesDialog && this.layerRecord.get("styles")) {
             // TODO: revisit this
-            var url = this.layerRecord.get("restUrl").replace("http://", "http://{username}:{password}@");
+            //var url = this.layerRecord.get("restUrl").replace("http://", "http://{username}:{password}@");
+            var url = this.layerRecord.get("restUrl");
+            if(url!=null)
+            	url = url.replace("http://", "http://{username}:{password}@");
+            
             if (!url) {
                 url = (this.source || this.layerRecord.get("layer")).url.split(
                     "?").shift().replace(/\/(wms|ows)\/?$/, "/rest").replace("http://", "http://{username}:{password}@");

@@ -97,6 +97,22 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
               scope: this
           });
           
+          this.target.mapPanel.on({
+        	  aftermapmove: function() {
+        			try {
+        				
+        				var lo_Extent = this.target.mapPanel.map.getExtent().clone().transform(new OpenLayers.Projection(this.target.mapPanel.map.projection),new OpenLayers.Projection("EPSG:900915"));
+        				window.parent.OverviewExtent(lo_Extent.toString()); 
+        	            
+        	        } 
+        	        catch (err) {
+        	        	console.log("Overview Penceresi yok.");
+        	            // TODO: improve destroy
+        	        }
+              },
+              scope: this
+          });
+          
           Ext.Ajax.on(
           		"CallzoomToFeature",
           		function(ao_layerName,as_cqlQuery){
@@ -127,8 +143,10 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
           Ext.Ajax.on(
           		"MapExtent",
           		function(extent){
-          			console.log("MapExtent:" + extent);
-          			this.target.mapPanel.map.zoomToExtent(new OpenLayers.Bounds.fromString(extent,this.target.mapPanel.map.projection),true);
+          			//console.log("MapExtent:" + extent);
+          			var lo_extent = new OpenLayers.Bounds.fromString(extent,this.target.mapPanel.map.projection);
+          			lo_extent.transform(new OpenLayers.Projection("EPSG:900915"),new OpenLayers.Projection(this.target.mapPanel.map.projection));
+          			this.target.mapPanel.map.zoomToExtent(lo_extent,true);
                   },
                   this
               );
