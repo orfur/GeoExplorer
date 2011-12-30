@@ -106,7 +106,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
         	            
         	        } 
         	        catch (err) {
-        	        	console.log("Overview Penceresi yok.");
+        	        	//console.log("Overview Penceresi yok.");
         	            // TODO: improve destroy
         	        }
               },
@@ -165,7 +165,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	            layers:null,
 	            handler: function(evt)
 	            { 	          	    
-	                
+	            	this.enumAdresDeger = this.EnumAdres.ILCE;//default value
 	            	this.layers = this.getLayers();
 	                this.cbx_ilce  = this.createCbx("İlçe",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['İlçe Seçiniz.', '-']]}));
 	                this.cbx_mahalle  = this.createCbx("Mahalle",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['Mahalle Seçiniz.', '-']]}));

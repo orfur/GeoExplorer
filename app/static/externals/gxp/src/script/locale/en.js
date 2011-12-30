@@ -68,8 +68,8 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.plugins.Legend.prototype": {
-        menuText: "Legend",
-        tooltip: "Legend"
+        menuText: "Legend11",
+        tooltip: "Legend11"
     },
 
     "gxp.plugins.LoadingIndicator.prototype": {

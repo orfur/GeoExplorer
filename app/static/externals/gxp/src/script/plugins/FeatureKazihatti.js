@@ -407,7 +407,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			                        		//console.log("form is valid");
 			                        		frmUpload.form.submit(
 			                                {
-			                                	url: "http://localhost:8181/GeoImport/",
+			                                	url: "../GeoImport/",
 			                                	waitMsg: 'Aktarılıyor...',
 		                                		failure: function(form, action) {
 		                                			var jsonFormatter =  new OpenLayers.Format.GeoJSON();

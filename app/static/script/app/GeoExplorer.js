@@ -70,7 +70,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     mapPanel: null,
     
     toggleGroup: "toolGroup",
-
+    kurumID:"",
     constructor: function(config) {
         this.mapItems = [
             {
@@ -201,6 +201,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             });
         } else {
         	var kurumID = this.getKurumID();
+        	this.kurumID = kurumID;
         	if (kurumID != null)
         	{
         		this.id = kurumID; 
@@ -252,10 +253,32 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         
     },
-    
+    isInt:function(x) { 
+    	   var y=parseInt(x); 
+    	   if (isNaN(y)) return false; 
+    	   return x==y && x.toString()==y.toString(); 
+    	 },
     getKurumID: function() {
     	//TODO: Burasi doldurulacak
-    	return 12;
+    	//return 12;
+    	var defaultMap = 1000;
+    	try{
+    		var userJobTitle = window.parent.getUserFromLiferay();//window.parent.getUserJobTitle();
+    		if(userJobTitle.length>0)
+    		{
+    			
+    			var lo_tempArray = userJobTitle.split("-");
+    			if(lo_tempArray.length>1&&this.isInt(lo_tempArray[0]))
+    				defaultMap = lo_tempArray[0]
+    			
+    		}
+    	}catch(err)
+    	{
+    	}
+    	
+    	return defaultMap;
+    	
+    	
     },
     
     /** private: method[initPortal]

@@ -194,7 +194,33 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         }
         this.capGrid.show();
     },
-
+    isAccessDenied: function(ao_layerRecord)
+    {
+    		var isAccessable = true;
+    		var keywords =  ao_layerRecord.data.keywords;
+            //Ext.each(keywords, function(keyword){
+            for(var j=0;j<keywords.length;j++)
+            {
+            	var keyword = keywords[j];
+	    			if(keyword.indexOf("yetkisizkurumlar")!=-1)
+	            	{
+	            		
+	            		var lo_kurumlar = keyword.split(":");
+	            		if(lo_kurumlar.length>1)
+	            		{
+	            			
+	            			var lo_tempKurumlar = lo_kurumlar[1].split(",");
+		            		for(var i=0;i<lo_tempKurumlar.length;i++)
+		            		{
+		            			if(this.target.kurumID==lo_tempKurumlar[i])
+		            				isAccessable=false;
+		            		}
+	            		}
+	            	}
+            }
+	        
+	        return isAccessable;
+    },
     /**
      * private: method[initCapGrid]
      * Constructs a window with a capabilities grid.
@@ -221,17 +247,21 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             var records = capGridPanel.getSelectionModel().getSelections();
             var record;
             for (var i=0, ii=records.length; i<ii; ++i) {
-                record = source.createLayerRecord({
-                    name: records[i].get("name"),
-                    source: key
-                });
-                if (record) {
-                    if (record.get("group") === "background") {
-                        layerStore.insert(0, [record]);
-                    } else {
-                        layerStore.add([record]);
-                    }
-                }
+
+		                record = source.createLayerRecord({
+		                    name: records[i].get("name"),
+		                    source: key
+		                });
+		            	if(record && this.isAccessDenied(record))
+		            	{
+			                    if (record.get("group") === "background") {
+			                        layerStore.insert(0, [record]);
+			                    } else {
+			                        layerStore.add([record]);
+			                    }
+			            }
+		            	else
+		            		alert("Bu katmanı ekleme yetkiniz yok.")
             }
         };
 
