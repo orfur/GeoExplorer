@@ -1,3 +1,5 @@
 build
 geoexplorer.db
 /externals/ringojs
+/externals/ringojs/lib/ringo.jar
+/externals/ringojs/lib

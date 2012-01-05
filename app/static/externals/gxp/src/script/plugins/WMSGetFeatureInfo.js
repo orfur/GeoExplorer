@@ -60,7 +60,7 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      *  Otherwise, the html output from the server will be displayed as-is.
      *  Default is "html".
      */
-    format: "grid",
+    format: "html",//"grid",
     
     /** api: config[vendorParams]
      *  ``Object``

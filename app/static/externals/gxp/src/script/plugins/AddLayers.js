@@ -198,27 +198,29 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
     {
     		var isAccessable = true;
     		var keywords =  ao_layerRecord.data.keywords;
-            //Ext.each(keywords, function(keyword){
-            for(var j=0;j<keywords.length;j++)
-            {
-            	var keyword = keywords[j];
-	    			if(keyword.indexOf("yetkisizkurumlar")!=-1)
-	            	{
-	            		
-	            		var lo_kurumlar = keyword.split(":");
-	            		if(lo_kurumlar.length>1)
-	            		{
-	            			
-	            			var lo_tempKurumlar = lo_kurumlar[1].split(",");
-		            		for(var i=0;i<lo_tempKurumlar.length;i++)
+    		if(keywords!=null)
+    		{
+	            //Ext.each(keywords, function(keyword){
+	            for(var j=0;j<keywords.length;j++)
+	            {
+	            	var keyword = keywords[j];
+		    			if(keyword.indexOf("yetkisizkurumlar")!=-1)
+		            	{
+		            		
+		            		var lo_kurumlar = keyword.split(":");
+		            		if(lo_kurumlar.length>1)
 		            		{
-		            			if(this.target.kurumID==lo_tempKurumlar[i])
-		            				isAccessable=false;
+		            			
+		            			var lo_tempKurumlar = lo_kurumlar[1].split(",");
+			            		for(var i=0;i<lo_tempKurumlar.length;i++)
+			            		{
+			            			if(this.target.kurumID==lo_tempKurumlar[i])
+			            				isAccessable=false;
+			            		}
 		            		}
-	            		}
-	            	}
-            }
-	        
+		            	}
+	            }
+    		}
 	        return isAccessable;
     },
     /**
