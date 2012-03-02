@@ -154,7 +154,7 @@ GeoExt.Lang.add("tr", {
     
     "gxp.plugins.Styler.prototype": {
         menuText: "Sembol Düzenle",
-        tooltip: "Katman Sembol Yöneticisi"
+        tooltip: "Sembol Düzenle"//"Katman Sembol Yöneticisi"
 
     },
 

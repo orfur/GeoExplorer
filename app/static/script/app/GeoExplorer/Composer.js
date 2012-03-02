@@ -97,7 +97,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             },
             {
                 ptype: "gxp_zoomtoextent",
-                actionTarget: {target: "paneltbar", index: 7}
+                actionTarget: {target: "paneltbar", index: 9}
             }, 
             {
                 ptype: "gxp_measure", toggleGroup: this.toggleGroup,
@@ -105,9 +105,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 10}
             },
             {
-                deneme : "adfsdgfs",
             	ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 11}
+                actionTarget: {target: "paneltbar", index: 12}
             },
             /*
             {
@@ -119,7 +118,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     "example.com": "-your-api-key-here-"
                 }
             },
-            */
+            */ 
             {
                 ptype: "gxp_featurekazihatti",
                 wfsURL: config.wfsURL,
@@ -129,7 +128,12 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             {
                 ptype: "gxp_kocaeligissorgu",
                 toggleGroup: this.toggleGroup,
-                actionTarget: {target: "paneltbar", index: 16}
+                actionTarget: {target: "paneltbar", index: 17}
+            },
+            {
+                ptype: "gxp_flexcityadresal",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 18}
             }
         ];
         
@@ -393,6 +397,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             title: this.exportMapText,
             items: [wizard]
        }).show();
+       
+       
+      
     }
 
 });

@@ -41,7 +41,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for layer properties action tooltip (i18n).
      */
-    tooltip: "Katman Sembol Yöneticisi",
+    tooltip: "Sembol Düzenle",//"Katman Sembol Yöneticisi",
     
     /** api: config[sameOriginStyling]
      *  ``Boolean``

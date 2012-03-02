@@ -17,6 +17,8 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	queuedFeatures: [],
 	vectorLayer : null,
 	printService: null,
+	aykomeGridId:-1,
+	aykomeGridButtonid:-1,
 	constructor: function(config) {
         gxp.plugins.Featurekazihatti.superclass.constructor.apply(this, arguments);
     },
@@ -53,18 +55,14 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
           			var lo_layer = this.getLayer("kazihatti");
           			if(lo_layer!=null)
           			{
+          				this.aykomeGridId = tableid;
+          				this.aykomeGridButtonid = buttonid;
+          				//this.createObjectID(lo_layer.data.name,fid) == this.vectorLayer.features[1].fid
             			var vectorFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.MultiLineString(null));
             			vectorFeature.fid = this.createObjectID(lo_layer.data.name,fid);
             			vectorFeature.state = OpenLayers.State.DELETE;
             			this.vectorLayer.addFeatures(vectorFeature);
             			this.saveStrategy.save();
-            			Ext.Ajax.fireEvent("refreshFLayer",'kazihatti');
-            			try
-            			{
-            				window.parent.deleteSuccess(true,tableid,buttonid);
-            			}
-            			catch(err)
-            			{alert("deleteSucces cağrılamadı");}
           			}
           			else
           				alert("Katman bulunamadı.");
@@ -244,21 +242,28 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		{
 			Ext.Msg.show({
 				   title:'Mahalle / Sokak Bilgisi Bulunamadı',
-				   msg: 'Son çizilen kazı hattı için mahelle / sokak bilgisi bulunamadı.',
-				   buttons: Ext.Msg.OK,
+				   msg: 'Son çizilen kazı hattı için mahelle / sokak bilgisi bulunamadı.\nÇizilen nesne geri alınsınmı?',
+				   buttons: {ok: "Evet", cancel: "Hayır"},
+				   scope : this,
+				   fn: this.processResult,
 				   icon: Ext.MessageBox.INFO
 			});
 		}
     	this.queue++;
     	Ext.Ajax.fireEvent("nextFeature");
-    },   
-    
+    },
+    processResult : function (btn) {	 
+        if(btn === 'ok' && this.vectorLayer.features.length>0)
+        	this.vectorLayer.removeFeatures([this.vectorLayer.features[this.vectorLayer.features.length-1]])
+    },
     addActions: function() {
     	var mapProjCode = this.target.mapPanel.map.projection;
     	var wfsLayers = this.wfsLayers;
     	this.saveStrategy = new OpenLayers.Strategy.Save();
 		//this.saveStrategy.events.register('start', null, saveStart);
-		this.saveStrategy.events.register('success', null, function(event) {
+    	//var kazihattitool =  this;
+		this.saveStrategy.events.register('success',this , function(event) {
+					
 			 var gisUrl="";
 			 var response = event.response; 
 			 var insertids = response.insertIds;
@@ -266,7 +271,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			 for(var i=0;i<insertids.length;i++)
 			 {
 				 
-			        Ext.each(this.layer.features, function(feature)
+			        Ext.each(this.saveStrategy.layer.features, function(feature)
 			        {
 			        
 			        	if(feature.fid==insertids[i])
@@ -289,13 +294,14 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			        		gisUrl+= "|"; 
 			        		gisUrl+=feature.attributes["YOL_KAPLAMA_CINSI"];
 			        		gisUrl+= "|"; 
-			        		gisUrl+= Math.round( feature.geometry.getLength()*100)/100;
+			        		var transGeom  = feature.geometry.clone().transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
+			        		gisUrl+= Math.round( transGeom.getLength()*100)/100;
 			        		
 			        		if(i!=insertids.length-1)
 			        			gisUrl+= "#";
 			        	}
 			        		
-			        });
+			        },this);
 			        
 			        if(i==insertids.length-1)
 			        	fidsString  +=insertids[i];
@@ -306,19 +312,23 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			 	
 			 if(gisUrl.length>0)
 		     {
-				    var mapExtent = this.layer.map.getExtent();
+				   this.vectorLayer.removeAllFeatures();
+				   Ext.Ajax.fireEvent("refreshFLayer",'kazihatti');
+					
+				    var mapExtent = this.saveStrategy.layer.map.getExtent();
 				    var ls_printUrl = ""; 
-				    ls_printUrl += this.layer.protocol.url.replace(/wfs/gi,"wms") + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=" + mapProjCode+ "&format_options=layout:legendkocaeli";
+				    ls_printUrl += this.saveStrategy.layer.protocol.url.replace(/wfs/gi,"wms") + "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=" + mapProjCode+ "&format_options=layout:legendkocaeli";
 				    ls_printUrl += "&BBOX=" + mapExtent.toString();
 				    ls_printUrl += "&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=" + wfsLayers;
-				    ls_printUrl += "&WIDTH="+this.layer.map.size.w+ "&HEIGHT="+ this.layer.map.size.h +"&TILED=true&TRANSPARENT=TRUE&featureid=" + fidsString;
-				    
+				    ls_printUrl += "&WIDTH="+this.saveStrategy.layer.map.size.w+ "&HEIGHT="+ this.saveStrategy.layer.map.size.h +"&TILED=true&TRANSPARENT=TRUE&featureid=" + fidsString;
+
 			        console.log(gisUrl);
 			        console.log(ls_printUrl);
 					 
 			      try
 			      {
 			    	  window.parent.setGisData("returnAddress",gisUrl,ls_printUrl);	//mis event (datagrid adres doldurulan form)
+
 			      }
 			      catch(err)
 			      {
@@ -326,16 +336,40 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			    	  
 			      }
 		      }
-			 
-			 
+			 else if(this.aykomeGridId!=-1 && this.aykomeGridButtonid !=-1 )//delete işlemi aykome grid ve buttonidleri
+		     {
+				 
+				    this.vectorLayer.removeAllFeatures();
+					Ext.Ajax.fireEvent("refreshFLayer",'kazihatti');
+					try
+					{
+						window.parent.deleteSuccess(true,this.aykomeGridId,this.aykomeGridButtonid);
+					}
+					catch(err)
+					{
+						alert("deleteSucces cağrılamadı");
+					}
+					
+					this.aykomeGridId = -1;
+					this.aykomeGridButtonid = -1;
+		     }
 		});
+		
+		
+		
+
+		
+		
+		
+		
+		
 		//this.saveStrategy.events.register('fail', null, saveFail);
 		Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
 		this.vectorLayer = new OpenLayers.Layer.Vector(this.id, {
 			strategies: [this.saveStrategy],
 	        displayInLayerSwitcher: false,
 	        visibility: true,
-	        projection : new OpenLayers.Projection("EPSG:900913"),
+	        projection : new OpenLayers.Projection("EPSG:102113"),
 	        protocol : new OpenLayers.Protocol.WFS({
                 version : "1.1.0",
                 url : this.wfsURL,
@@ -357,6 +391,35 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
                    }
 			 }
 	     });
+		
+		
+		//measure tool start
+		OpenLayers.Event.observe(document, "keydown", function(evt) {
+		    var handled = false;
+		    switch (evt.keyCode) {
+		        case 90: // z
+		            if (evt.metaKey || evt.ctrlKey) {
+		            	drawControl.undo();
+		                handled = true;
+		            }
+		            break;
+		        case 89: // y
+		            if (evt.metaKey || evt.ctrlKey) {
+		            	drawControl.redo();
+		                handled = true;
+		            }
+		            break;
+		        case 27: // esc
+		        	drawControl.cancel();
+		            handled = true;
+		            break;
+		    }
+		    if (handled) {
+		        OpenLayers.Event.stop(evt);
+		    }
+		});
+		//measure tool end
+		
 		 var actions = [
 		    new GeoExt.Action({
 	            tooltip: "Kazı Hattı Oluştur",
@@ -368,6 +431,17 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            toggleGroup: this.toggleGroup,
 	            scope: this
 	        }),
+	        new GeoExt.Action({
+	            tooltip: "Çizilen kazı hattını geri al",
+	            menuText: "Çizilen kazı hattını geri al",
+	            iconCls: "gxp-icon-featuregerial",
+	            handler: function(){ 
+	            	if(this.vectorLayer.features.length>0)
+	            		this.vectorLayer.removeFeatures([this.vectorLayer.features[this.vectorLayer.features.length-1]])
+	            },
+	            scope: this,
+	            map: this.target.mapPanel.map
+			}),
 			{
 		    	tooltip: "İçeri Aktar",
 		    	iconCls: "gxp-icon-addpackage",

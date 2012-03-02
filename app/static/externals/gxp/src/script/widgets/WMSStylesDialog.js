@@ -523,41 +523,60 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
     /** private: method[addRule]
      */
     addRule: function() {
-        var legend = this.items.get(2).items.get(0);
-        this.selectedStyle.get("userStyle").rules.push(
-            this.createRule()
-        );
-        legend.update();
-        // mark the style as modified
-        this.selectedStyle.store.afterEdit(this.selectedStyle);
-        this.updateRuleRemoveButton();
+    	if(!this.selectedStyle.get("userStyle").isDefault)
+	    {
+	        var legend = this.items.get(2).items.get(0);
+	        this.selectedStyle.get("userStyle").rules.push(
+	            this.createRule()
+	        );
+	        legend.update();
+	        // mark the style as modified
+	        this.selectedStyle.store.afterEdit(this.selectedStyle);
+	        this.updateRuleRemoveButton();
+	    }
+    	else
+    		alert("Varsayılan sembol düzenlenemez.");
     },
     
     /** private: method[removeRule]
      */
     removeRule: function() {
-        this.selectedStyle.get("userStyle").rules.remove(this.selectedRule);
-        // mark the style as modified
-        this.afterRuleChange();
+    	if(!this.selectedStyle.get("userStyle").isDefault)
+	    {
+	        this.selectedStyle.get("userStyle").rules.remove(this.selectedRule);
+	        // mark the style as modified
+	        this.afterRuleChange();
+	    }
+    	else
+    	{
+    		alert("Varsayılan sembol düzenlenemez.");
+    	}
     },
     
     /** private: method[duplicateRule]
      */
     duplicateRule: function() {
-        var legend = this.items.get(2).items.get(0);
-        var newRule = this.selectedRule.clone();
-        this.selectedStyle.get("userStyle").rules.push(
-            newRule
-        );
-        legend.update();
-        // mark the style as modified
-        this.selectedStyle.store.afterEdit(this.selectedStyle);
-        this.updateRuleRemoveButton();
+    	if(!this.selectedStyle.get("userStyle").isDefault)
+	    {
+	        var legend = this.items.get(2).items.get(0);
+	        var newRule = this.selectedRule.clone();
+	        this.selectedStyle.get("userStyle").rules.push(
+	            newRule
+	        );
+	        legend.update();
+	        // mark the style as modified
+	        this.selectedStyle.store.afterEdit(this.selectedStyle);
+	        this.updateRuleRemoveButton();
+	    }
+    	else
+    		alert("Varsayılan sembol düzenlenemez.");
     },
     
     /** private: method[editRule]
      */
     editRule: function() {
+    	if(!this.selectedStyle.get("userStyle").isDefault)
+    	{
         var rule = this.selectedRule;
         var origRule = rule.clone();
 
@@ -608,6 +627,9 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
             }]
         });
         ruleDlg.show();
+    	}
+    	else
+    		alert("Varsayılan sembol düzenlenemez.");
     },
     
     /** private: method[saveRule]

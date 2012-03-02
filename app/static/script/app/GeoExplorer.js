@@ -61,6 +61,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     descriptionText: "Description",
     contactText: "Contact",
     aboutThisMapText: "About this Map",
+    mapintializedcomplete:false,
     // End i18n.
     
     /**
@@ -241,6 +242,10 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 	            this.applyConfig(config);
         	}
         }
+       
+        	
+        	
+        	
         
     },
     
@@ -316,6 +321,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 item.disable();
             });
             westPanel.collapse();
+            
+            var mapExtent =  this.getCookieValue("extent");
+            if(mapExtent!=null&mapExtent!="")
+            {
+      			var lo_extent = new OpenLayers.Bounds.fromString(mapExtent,this.mapPanel.map.projection);
+      			this.mapPanel.map.zoomToExtent(lo_extent,true);
+            }
+            this.mapintializedcomplete = true;
         });
 
         var googleEarthPanel = new gxp.GoogleEarthPanel({
