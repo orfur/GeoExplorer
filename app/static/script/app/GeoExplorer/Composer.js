@@ -24,7 +24,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     cookieParamName: 'geoexplorer-user',
 
     // Begin i18n.
-    saveMapText: "Harita Kaydet",
+    saveMapText: "Haritayı Kaydet",
     exportMapText: "Harita Yayinla",
     toolsTitle: "Haritada goruntulenecek araclari secin:",
     previewText: "Onizleme",

@@ -1,5 +1,5 @@
 Ext.namespace("gxp.plugins");
-  
+
 gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     
       ptype: "gxp_kocaeligissorgu",
@@ -22,7 +22,6 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
       cbx_sokak:null,
       cbx_kapi:null,
       cbx_koy:null,
-      waitingDialog:null,
       constructor: function(config) {
     	  gxp.plugins.KocaeliGisSorgu.superclass.constructor.apply(this, arguments);
       }, 
@@ -164,11 +163,6 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
                   },
                   this
               );
-          
-          waitingDialog = new Ext.LoadMask(Ext.getBody(), {msg:"Lütfen bekleyiniz..."});
-          Ext.Ajax.on('beforerequest', waitingDialog.show, waitingDialog);
-          Ext.Ajax.on('requestcomplete', waitingDialog.hide, waitingDialog);
-          Ext.Ajax.on('requestexception', waitingDialog.hide, waitingDialog);
     	  
     	  
       },
@@ -211,8 +205,8 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			                	if(index>0){
 			                		 this.enumAdresDeger=this.EnumAdres.SOKAK;
 			                		this.getAddressDataset(this.SERVICE_URL + this.SOKAKLAR + "ilce_kodu="+ this.cbx_ilce.getValue() + "&mahalle_kodu=" + this.cbx_mahalle.getValue());
-			                		this.queryLayer(this.layers.koy , "MAH_ID=" + this.cbx_koy.getValue(),true);
 			                		//this.queryLayer(this.layers.mahalle , "MAHALLEID=" + this.cbx_mahalle.getValue(),true);
+									this.queryLayer(this.layers.koy , "MAH_ID=" + this.cbx_mahalle.getValue(),true);
 			                	}},this);
 	                
 	                this.cbx_sokak.on('select', function(box, record, index) {
@@ -384,11 +378,13 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     											 + "&" + as_cqlFilter;
     											 //+ "&CQL_FILTER=" + as_cqlFilter;
     	
+    	Ext.getBody().mask("Lütfen bekleyiniz.", 'loading');
 		var lo_request = OpenLayers.Request.GET({
 		    url: ls_wfsURL,
 		    timeout:5000,
 		    async: false
 		});
+		Ext.getBody().unmask();
 		var jsonFormatter =  new OpenLayers.Format.GeoJSON();
 		
 		this.target.mapPanel.map.raiseLayer(this.featureLayer, this.target.mapPanel.map.layers.length); // topmostlayer (selectionlayer)
@@ -408,7 +404,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			
     },
     getAddressDataset: function(serviceUrl) {
-    	
+    	Ext.getBody().mask("Lütfen bekleyiniz.", 'loading');
 		 var requestGetAddress = OpenLayers.Request.GET({
 			    url: serviceUrl,
 			    async: true,
@@ -430,6 +426,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
    },
     getAddress_result:function(event)
     {
+    	Ext.getBody().unmask();
 	    var addressDataSet = new Ext.data.ArrayStore({
 	        id: 0,
 	        fields: ['ad','kod']
@@ -507,7 +504,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     },
     getAddress_fault:function(event)
     {
-    	
+    	Ext.getBody().unmask();
     	alert("Hata oluştu.");
     }
     

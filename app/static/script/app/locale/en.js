@@ -23,7 +23,7 @@ GeoExt.Lang.add("en", {
     },
     "GeoExplorer.Composer.prototype": {
         exportMapText: "Harita yayınla",
-        saveMapText: "Harita kaydet",
+        saveMapText: "Haritayı Kaydet",
         toolsTitle: "Haritada görüntülenecek araç seçiniz:",
         previewText: "Önizleme",
         backText: "Geri",

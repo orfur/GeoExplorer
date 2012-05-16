@@ -46,7 +46,7 @@
             authStatus: <% status %>,
             proxy: "proxy?url=",
             printService: "/geoserver/pdf/",
-            wfsURL : "http://10.0.0.153:8080/geoserver/wfs",
+            wfsURL : "http://geoserver.kocaeli.bel.tr:8090/geoserver/wfs",//"http://10.0.0.153:8080/geoserver/wfs",
             about: {
                 title: "Umi Map Test Application",
                 "Amaç": "Universal Mekansal İşlemci ",
@@ -55,7 +55,7 @@
             defaultSourceType: "gxp_wmscsource",
             sources: {
                 local: {
-                	url: "http://10.0.0.153:8080/geoserver/ows",
+                	url: "http://geoserver.kocaeli.bel.tr:8090/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",
                     title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },
@@ -143,6 +143,66 @@
                     ]
                 },
                 {
+                	source:"local",
+                	name:"UniversalWorkspace:SDE.KOYMAHALLE",
+                	title:"MAHALLE",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"UniversalWorkspace:SDE.KARAYOLU",
+                	title:"KARAYOLU",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"UniversalWorkspace:SDE.KOCAELI_YAPI",
+                	title:"BINA",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },                
+                {
+                	source:"local",
+                	name:"UniversalWorkspace:SDE.KOCAELI_KAPI",
+                	title:"KAPI",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"UniversalWorkspace:SDE.KAZIHATTI",
+                	title:"KAZI HATLARI",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
                		source:"local",
                		name:"UniversalWorkspace:SDE.YAGMURSUYU_HAT",
                		title:"YAGMUR SUYU HATLARI",
@@ -225,72 +285,11 @@
                 	styles:"",
                 	transparent:true,
                 	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.KAZIHATTI",
-                	title:"KAZI HATLARI",
-                	visibility:true,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.KOCAELI_KAPI",
-                	title:"KAPI",
-                	visibility:true,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.KOCAELI_YAPI",
-                	title:"BINA",
-                	visibility:true,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.KARAYOLU",
-                	title:"KARAYOLU",
-                	visibility:true,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.KOYMAHALLE",
-                	title:"MAHALLE",
-                	visibility:true,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
                 }
                 ],
                 center: [3326386.5964513,4981095.3845385],
                 zoom: 10
             }
         });
-
         
     </script>

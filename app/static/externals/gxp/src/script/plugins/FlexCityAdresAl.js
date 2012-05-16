@@ -7,11 +7,16 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
       tooltip: "Adres Al",
       menuText: "Adres Al",
       dataLayers:null,
+      busyMask:null,
       constructor: function(config) {
     	  gxp.plugins.KocaeliGisSorgu.superclass.constructor.apply(this, arguments);
       }, 
       init: function(target) {
-    	  
+          this.busyMask = new Ext.LoadMask(
+                  target.mapPanel.map.div, {
+                      msg: "Lütfen bekleyiniz."
+                  }
+              );
     	  gxp.plugins.FlexCityAdresAl.superclass.init.apply(this, arguments);   	  
       },
       addActions: function() {
@@ -52,9 +57,8 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
               	  //kapi bilgisi
               	  //var response = this.scope.queryOnLayer(this.scope.dataLayers.kapi,"KAPI_NO,NVI_CSBMKOD,NVI_BINAKOD,PARSEL_ID","DWITHIN(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"),1,meters)");
 				var intersectGeometry = new OpenLayers.Bounds();
-              	intersectGeometry.extend(new OpenLayers.LonLat(lonlat.lon-1,lonlat.lat-1));
-              	intersectGeometry.extend(new OpenLayers.LonLat(lonlat.lon+1,lonlat.lat+1));
-              	
+              	intersectGeometry.extend(new OpenLayers.LonLat(lonlat.lon-2,lonlat.lat-2));
+              	intersectGeometry.extend(new OpenLayers.LonLat(lonlat.lon+2,lonlat.lat+2));
 				
 				adresStore.data["NVI_CSBMKOD"]="0";
 				adresStore.data["KAPI_NO"]="0";
@@ -83,7 +87,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 								});
 								
 		              		  	//alert("kapiNo:" + kapi.attributes["KAPI_NO"]);
-		              		  	
+		              		  	 
 		              		  	  //sokak bilgisi
 		              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"YOL_ID,YOL_ISMI,CSBMKOD,SHAPE","CSBMKOD="+ kapi.attributes["NVI_CSBMKOD"]);
 		                      	  Ext.each(response, function(sokak)
@@ -160,7 +164,14 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		              	try //vaadin service erisim icin kullanilan fonksiyon 
 						{
 								//Ext.MessageBox.minWidth = 300; 
-								Ext.MessageBox.confirm('Warning', "Şeçmek istediğiniz adres?\n" +
+		              		Ext.MessageBox.buttonText = {
+		              	            ok     : "Tamam",
+		              	            cancel : "İptal",
+		              	            yes    : "Evet",
+		              	            no     : "Hayır"
+		              	        };
+		              		
+		              		Ext.MessageBox.confirm('Uyarı', "Şeçmek istediğiniz adres?\n" +
 								adresStore.data["ILCE_ADI"] + " İlçesi\n" +
 								adresStore.data["MAH_ADI"]  + " Mahallesi\n" + 
 								adresStore.data["YOL_ISMI"] + " Cad./Sok. " + 
@@ -178,8 +189,6 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 																adresStore.data["BINA_ADI"]	+':'+
 																adresStore.data["BINA_KODU"]);
 								});
-							
-		
 						}						    			
 						catch(err)
 						{
@@ -209,8 +218,8 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 
     	  
         var actions = [new GeoExt.Action({
-            tooltip: "FlexCityAdresAl",
-            menuText: "FlexCityAdresAl",
+            tooltip: "Adresi Seç",
+            menuText: "Adresi Seç",
             iconCls: "gxp-icon-flexcityadresal",
             enableToggle: true,
             control: new OpenLayers.Control.Click(),
@@ -257,12 +266,25 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 	        
 	        return layers;
     },
+    uniWaiting: function(msecs)
+    {
+    	var start = new Date().getTime();
+    	var cur = start
+    	while(cur - start < msecs)
+    	{
+    	cur = new Date().getTime();
+    	} 
+    },
     queryOnLayer: function(ao_layer,as_properties,as_cqlFilter)//return request.responseText 
     {
     	var layerTemp = ao_layer.data.layer;
     	var ls_wfsURL = layerTemp.url.replace(/wms/gi,"wfs");
     	var jsonFormatter =  new OpenLayers.Format.GeoJSON(); 
     	
+    	Ext.getBody().mask("Lütfen bekleyiniz.", 'loading');
+        //this.busyMask.show();
+    	//this.uniWaiting(3000);
+
 		var lo_request = OpenLayers.Request.GET({
 		    url: ls_wfsURL,
 		    params: {	
@@ -278,6 +300,8 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		    timeout:5000,
 		    async: false
 		});
+		Ext.getBody().unmask();
+		//this.busyMask.hide();
 		return jsonFormatter.read(lo_request.responseText);
     				
     },
@@ -289,8 +313,6 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
     		this.queryWFSLayer(ao_layer,as_Filter);
 			
     }
-    
-    
 		
 });
 

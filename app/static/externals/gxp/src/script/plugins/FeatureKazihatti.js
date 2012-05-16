@@ -89,6 +89,10 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
         		},
                 this
           );
+        
+	    Ext.Ajax.on('beforerequest',function(){Ext.getBody().mask("Lütfen bekleyiniz.", 'loading') }, Ext.getBody());
+	    Ext.Ajax.on('requestcomplete',Ext.getBody().unmask ,Ext.getBody());
+	    Ext.Ajax.on('requestexception', Ext.getBody().unmask , Ext.getBody());
 
     },
     getLayer: function(layername)
@@ -150,7 +154,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		    	"outputFormat" : "json",
 		    	"typename" : "UniversalWorkspace:SDE.KARAYOLU",
 		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CI,SHAPE",
-		    	"cql_filter" : "DWITHIN(SHAPE,"+transGeom.components[0].simplify().toString()+",2,meters)"
+		    	"cql_filter" : "DWITHIN(SHAPE,"+transGeom.components[0].toString()+",2,meters)"
 		    },
 		    async: false
     	});
@@ -221,7 +225,12 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
                     	for (r in item.data)
                     	{
                     		if (r!='MAH_SOK')
+                    		{
                     			feature.attributes[r] = item.data[r];
+                        		if(r=='YOL_ISMI' && item.data[r] ==null)
+                        			this.getSokakNewValueForm(feature);
+                    		}
+                    		
                     	}
                     	selectRegionWin.hide();
                     },
@@ -235,14 +244,19 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			for (r in item.data)
 			{
             	if (r!='MAH_SOK')
+            	{
             		feature.attributes[r] = item.data[r];
+            		if(r=='YOL_ISMI' && item.data[r] ==null)
+            			this.getSokakNewValueForm(feature);
+            			
+            	}	
 			}
 		}
 		else
 		{
 			Ext.Msg.show({
 				   title:'Mahalle / Sokak Bilgisi Bulunamadı',
-				   msg: 'Son çizilen kazı hattı için mahelle / sokak bilgisi bulunamadı.\nÇizilen nesne geri alınsınmı?',
+				   msg: 'Son çizilen kazı hattı için mahalle / sokak bilgisi bulunamadı.\nÇizilen nesne geri alınsınmı?',
 				   buttons: {ok: "Evet", cancel: "Hayır"},
 				   scope : this,
 				   fn: this.processResult,
@@ -252,6 +266,43 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     	this.queue++;
     	Ext.Ajax.fireEvent("nextFeature");
     },
+    getSokakNewValueForm: function (sokakfeature){
+    	
+        var sokakTextField = new Ext.form.TextField({
+
+            fieldLabel: 'Sokak Adı',
+
+            name: ''
+
+        });
+    	
+		var getSokakNewValueWin = new Ext.Window({
+			title: "Yeni Sokak Adi",
+			layout: "fit",
+			height: 100,
+			width: 280,
+	        modal: true,
+			items: [
+            {
+                xtype: "form",
+                bodyStyle: "padding: 5px;",
+                labelWidth: 80,
+                items: [sokakTextField]
+            }],
+    		buttons: [{
+                text: "Tamam",
+                handler: function(){
+
+                		sokakfeature.attributes[r] = sokakTextField.getValue();
+                		getSokakNewValueWin.hide();
+                },
+                scope: this
+            }]  							         
+	    });
+		getSokakNewValueWin.show();
+    	
+    }
+    ,
     processResult : function (btn) {	 
         if(btn === 'ok' && this.vectorLayer.features.length>0)
         	this.vectorLayer.removeFeatures([this.vectorLayer.features[this.vectorLayer.features.length-1]])

@@ -102,8 +102,8 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.plugins.Navigation.prototype": {
-        menuText: "Harita Kaydir",
-        tooltip: "Harita Kaydir"
+        menuText: "Haritayı Kaydir",
+        tooltip: "Haritayı Kaydir"
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
@@ -160,8 +160,8 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
-        infoActionTip: "Nense bilgisi al",
-        popupTitle: "Nesne Bilgisi"
+        infoActionTip: "Nense Bilgisini Al",
+        popupTitle: "Nense Bilgisini Al"
     },
 
     "gxp.plugins.Zoom.prototype": {
