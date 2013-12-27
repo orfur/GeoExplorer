@@ -9,7 +9,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
       dataLayers:null,
       busyMask:null,
       constructor: function(config) {
-    	  gxp.plugins.KocaeliGisSorgu.superclass.constructor.apply(this, arguments);
+    	  gxp.plugins.FlexCityAdresAl.superclass.constructor.apply(this, arguments);
       }, 
       init: function(target) {
           this.busyMask = new Ext.LoadMask(

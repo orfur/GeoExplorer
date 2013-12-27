@@ -134,7 +134,37 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_flexcityadresal",
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 18}
+            },
+            {
+                ptype: "gxp_flexcitycurrentlocation",
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 19}
             }
+            /* ,
+            {
+                ptype:"gxp_playback",
+                controlOptions:{
+                    units:OpenLayers.TimeUnit.DAYS,
+                    step:10
+                },
+                //playbackMode:'ranged',
+                //rangedPlayInterval:18,
+                outputConfig: {
+                    dynamicRange: false
+                }
+            },
+            {
+                ptype: "gxp_featuremanager",
+                id: "featuremanager",
+                paging: false
+            }, {
+                ptype: "gxp_featureeditor",
+                featureManager: "featuremanager",
+                autoLoadFeatures: true,
+                toggleGroup: this.toggleGroup,
+                actionTarget: {target: "paneltbar", index: 20}
+            }*/
+            
         ];
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);

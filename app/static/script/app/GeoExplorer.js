@@ -72,6 +72,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     
     toggleGroup: "toolGroup",
     kurumID:"",
+    uniMarkerVectorLayer:null,
     constructor: function(config) {
         this.mapItems = [
             {
@@ -223,7 +224,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                          {
                         	 this.on({
                                  ready: function() {
-                                	 this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"POST");
+                                	 //this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"POST");
                                  }
                         	 });
                          }
@@ -242,11 +243,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 	            this.applyConfig(config);
         	}
         }
-       
-        	
-        	
-        	
-        
+
     },
     
     displayXHRTrouble: function(msg, status) {
@@ -262,7 +259,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     	   var y=parseInt(x); 
     	   if (isNaN(y)) return false; 
     	   return x==y && x.toString()==y.toString(); 
-    	 },
+    },
     getKurumID: function() {
     	//TODO: Burasi doldurulacak
     	//return 12;
@@ -284,6 +281,57 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     	return defaultMap;
     	
     	
+    },
+    getLocationMarkers: function() {
+    	var markerLocations = window.parent.getMarkerLocations();
+    	var serverMapExtent = window.parent.getMapExtent();
+    	//TODO: Haritada gösterilecek olan coordinate noktaları kullanıcıdan alınıyor.
+    	uniMarkerVectorLayer = new OpenLayers.Layer.Vector("Yerlerim", {
+            styleMap: new OpenLayers.StyleMap(
+                    { 'default': 
+                       {
+	                       pointRadius: 32,
+	                       pointerEvents: "visiblePainted",
+	                       externalGraphic:"http://geoserver.kocaeli.bel.tr:8090/geoserver/data/styles/marker_place.png",//localkaynak ayarlanacak
+	                       label: "${order}",
+	                       fontColor: "#000000",
+	                       fontSize: "16px",
+	                       fontFamily: "Courier New, monospace",
+	                       fontWeight: "bold",
+	                       labelAlign: "cm",
+	                       labelXOffset: "0",
+	                       labelYOffset: "0"
+                       }
+               })
+           });
+    	
+    	if(markerLocations!=null)
+    	{
+    		var lo_tempMarkerArray = markerLocations.split("||");
+    		
+            for (var i=0; i<lo_tempMarkerArray.length; i++) {
+            	
+            	var lo_tempMarker = lo_tempMarkerArray[i];
+            	var lo_tempCoordinateArray = lo_tempMarker.split(":");
+    	        var point = new OpenLayers.Geometry.Point(lo_tempCoordinateArray[0],lo_tempCoordinateArray[1]);
+    	        point.transform(new OpenLayers.Projection("EPSG:4326"),this.map.projection);
+    	        
+    	        var pointFeature = new OpenLayers.Feature.Vector(point);
+    	        pointFeature.attributes.order = "";
+    	        if(lo_tempCoordinateArray.length>2 && lo_tempCoordinateArray[3]!=undefined)
+    	        	pointFeature.attributes.order = lo_tempCoordinateArray[3];
+    	        
+    	        uniMarkerVectorLayer.addFeatures([pointFeature]);
+            }
+	        this.mapPanel.map.addLayer(uniMarkerVectorLayer);
+    	}
+        
+        if(serverMapExtent!=null&serverMapExtent!="")
+        {
+  			var lo_extent = new OpenLayers.Bounds.fromString(serverMapExtent,this.mapPanel.map.projection);
+  			this.mapPanel.map.zoomToExtent(lo_extent,true);
+        }
+
     },
     
     /** private: method[initPortal]
@@ -328,7 +376,17 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
       			var lo_extent = new OpenLayers.Bounds.fromString(mapExtent,this.mapPanel.map.projection);
       			this.mapPanel.map.zoomToExtent(lo_extent,true);
             }
+            
+//            var locationMarkerLayer =  this.getLocationMarkers();
+//            this.mapPanel.map.addLayer(locationMarkerLayer);
+            try {
+    			eval(window.parent.gisJavaScriptExecute());
+            } catch (err) {
+            	//console.log("There is no Parent window");
+            }
+
             this.mapintializedcomplete = true;
+			
         });
 
         var googleEarthPanel = new gxp.GoogleEarthPanel({
@@ -557,4 +615,3 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         win.show();
     }
 });
-

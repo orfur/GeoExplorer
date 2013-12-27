@@ -41,12 +41,12 @@
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
         GeoExt.Lang.set("tr");
-        Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
+        Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
             proxy: "proxy?url=",
             printService: "/geoserver/pdf/",
-            wfsURL : "http://geoserver.kocaeli.bel.tr:8090/geoserver/wfs",//"http://10.0.0.153:8080/geoserver/wfs",
+            wfsURL : "http://cbsserver.sultanbeyli.bel.tr:8890/geoserver/wfs",//"http://10.0.0.153:8080/geoserver/wfs",
             about: {
                 title: "Umi Map Test Application",
                 "Amaç": "Universal Mekansal İşlemci ",
@@ -55,16 +55,17 @@
             defaultSourceType: "gxp_wmscsource",
             sources: {
                 local: {
-                	url: "http://geoserver.kocaeli.bel.tr:8090/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",
+                	url: "http://cbsserver.sultanbeyli.bel.tr:8890/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",
                     title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },
+                /*
                 kocaeliimar: {
                 	url: "http://gis.kocaeli.bel.tr/ArcGIS/services/IMAR_YAYIN/MapServer/WMSServer?style=",
                     title: "Imar Katmanları",
                     ptype: "gxp_wmscsource"
                 },
-                /*suite: {
+                suite: {
                     url: "http://10.0.0.153:8080/geoserver/ows",
                     title: "UniGeoSever"
                 },
@@ -96,22 +97,27 @@
                 numZoomLevels:21,
                 maxResolution: 156543.0339,
                 maxExtent: [
-					3264889.3454759,
-					4942236.8339595,
-					3380661.6159009,
-					5043366.1352815
+        					3240031.863758,4993057.779463,
+        					3240031.863758,4993057.779463
                     //-20037508.34, -20037508.34,
                     //20037508.34, 20037508.34
                 ],
                 layers: [
-                /*{
+                {
                 	source: "google",
                     title: "Google Harita",
                     name: "SATELLITE",//"HYBRID",//"ROADMAP",
                     group: "background"
-                },*/
+                },
+                /*
+                                {
+                	source: "bing",
+                    title: "Bing Harita",
+                    name: "AerialWithLabels",//"HYBRID",//"ROADMAP",
+                    group: "background"
+                },
                 //baselayer parametresi ile KocaeliGisSorgu.js icindeki aftermapmove event'inde max zoom icin kontrol yapiliyor.
-                {
+                /*{
                 	source: "ol",
                     type: "OpenLayers.Layer.WMS",
                     group: "background",
@@ -122,6 +128,7 @@
                        ]
 
                 },
+               
                 {
                 	source: "ol",
                     type: "OpenLayers.Layer.WMS",
@@ -133,6 +140,7 @@
                        ]
   
                 },
+                */
                 {
                     source: "ol",
                     group: "background",
@@ -144,7 +152,7 @@
                 },
                 {
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KOYMAHALLE",
+                	name:"sbeyli:sbeyli_gisoft_mahalle_iska",
                 	title:"MAHALLE",
                 	visibility:true,
                 	opacity:1,
@@ -156,8 +164,8 @@
                 },
                 {
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KARAYOLU",
-                	title:"KARAYOLU",
+                	name:"sbeyli:sbeyli_gisoft_yol_abis_iska",
+                	title:"SOKAK",
                 	visibility:true,
                 	opacity:1,
                 	selected:false,
@@ -168,7 +176,7 @@
                 },
                 {
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KOCAELI_YAPI",
+                	name:"sbeyli:yapi",
                 	title:"BINA",
                 	visibility:true,
                 	opacity:1,
@@ -180,7 +188,7 @@
                 },                
                 {
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KOCAELI_KAPI",
+                	name:"sbeyli:sbeyli_gisoft_kapi_iska",
                 	title:"KAPI",
                 	visibility:true,
                 	opacity:1,
@@ -189,7 +197,8 @@
                 	styles:"",
                 	transparent:true,
                 	cached:true
-                },
+                }
+                /*,
                 {
                 	source:"local",
                 	name:"UniversalWorkspace:SDE.KAZIHATTI",
@@ -204,8 +213,8 @@
                 },
                 {
                		source:"local",
-               		name:"UniversalWorkspace:SDE.YAGMURSUYU_HAT",
-               		title:"YAGMUR SUYU HATLARI",
+               		name:"sbeyli:sbeyli_gisoft_yol_abis_iska",
+               		title:"YOL ABIS",
                		visibility:false,
                		opacity:1,
                		selected:false,
@@ -213,82 +222,10 @@
                		styles:"",
                		transparent:true,
                		cached:true ,
-                },
-                {	source:"local",
-                	name:"UniversalWorkspace:SDE.KANALIZASYON_HAT",
-                	title:"KANALIZASYON HATLARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.DIGER_HATLAR",
-                	title:"DIGER HATLAR",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                	
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.FIBER_HAT",
-                	title:"FIBER HATLAR",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.GAZ_HAT",
-                	title:"GAZ HATLARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.GAZ_KUTU",
-                	title:"GAZ KUTULARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.ICMESU_HAT",
-                	title:"ICMESUYU HATLARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                }
+                }*/
                 ],
-                center: [3326386.5964513,4981095.3845385],
-                zoom: 10
+                center: [3340031.863758,5193401.746091],
+                zoom: 12
             }
         });
         
