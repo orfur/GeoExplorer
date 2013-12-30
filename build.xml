@@ -8,7 +8,7 @@
     <property name="build" location="build"/>
     <property name="app.proxy.geoserver" value="http://cbsserver.sultanbeyli.bel.tr:8890/geoserver/"/>
     <property name="app.username" value="admin"/>
-    <property name="app.password" value="geoserver"/>
+    <property name="app.password" value="giSoft2013"/>
     <property name="app.port" value="8890"/>
 	<property name="tomcat_folder" value="C:/Java/gis/geoexplorer/Tomcat7Server/webapps/"/>
 

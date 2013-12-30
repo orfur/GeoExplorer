@@ -41,6 +41,7 @@
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
         GeoExt.Lang.set("tr");
+        Proj4js.defs["EPSG:40000"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
         Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
@@ -100,19 +101,19 @@
 							3247131.016191,5001141.122066,3271418.881925,5013638.576189
                 ],
                 layers: [
+
                 {
-                	source: "google",
-                    title: "Google Harita",
-                    name: "SATELLITE",//"HYBRID",//"ROADMAP",
-                    group: "background"
-                },
-                /*
-                                {
                 	source: "bing",
                     title: "Bing Harita",
                     name: "AerialWithLabels",//"HYBRID",//"ROADMAP",
                     group: "background"
                 },
+                {
+                	source: "google",
+                    title: "Google Harita",
+                    name: "SATELLITE",//"HYBRID",//"ROADMAP",
+                    group: "background"
+                },/*
                 //baselayer parametresi ile KocaeliGisSorgu.js icindeki aftermapmove event'inde max zoom icin kontrol yapiliyor.
                 /*{
                 	source: "ol",
@@ -175,7 +176,7 @@
                 	source:"local",
                 	name:"sbeyli:yapi",
                 	title:"BINA",
-                	visibility:true,
+                	visibility:false,
                 	opacity:1,
                 	selected:false,
                 	format:"image/png",
@@ -187,7 +188,7 @@
                 	source:"local",
                 	name:"sbeyli:sbeyli_gisoft_kapi_iska",
                 	title:"KAPI",
-                	visibility:true,
+                	visibility:false,
                 	opacity:1,
                 	selected:false,
                 	format:"image/png",
