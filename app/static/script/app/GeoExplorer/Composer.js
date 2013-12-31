@@ -118,13 +118,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     "example.com": "-your-api-key-here-"
                 }
             },
-            */ 
+             
             {
                 ptype: "gxp_featurekazihatti",
                 wfsURL: config.wfsURL,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 13}
             },
+            */
             {
                 ptype: "gxp_kocaeligissorgu",
                 toggleGroup: this.toggleGroup,
@@ -139,8 +140,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 ptype: "gxp_flexcitycurrentlocation",
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 19}
-            }
-            /* ,
+            },
+            /*
             {
                 ptype:"gxp_playback",
                 controlOptions:{
@@ -152,7 +153,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 outputConfig: {
                     dynamicRange: false
                 }
-            },
+            },*/
             {
                 ptype: "gxp_featuremanager",
                 id: "featuremanager",
@@ -163,7 +164,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 autoLoadFeatures: true,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 20}
-            }*/
+            }
             
         ];
         
