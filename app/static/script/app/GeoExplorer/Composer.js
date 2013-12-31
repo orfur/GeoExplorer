@@ -108,7 +108,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             	ptype: "gxp_wmsgetfeatureinfo", toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 12}
             },
-            /*
             {
                 ptype: "gxp_googleearth",
                 actionTarget: {target: "paneltbar", index: 17},
@@ -118,14 +117,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     "example.com": "-your-api-key-here-"
                 }
             },
-             
+            /*
             {
                 ptype: "gxp_featurekazihatti",
                 wfsURL: config.wfsURL,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 13}
             },
-            */
+             */
             {
                 ptype: "gxp_kocaeligissorgu",
                 toggleGroup: this.toggleGroup,
