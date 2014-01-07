@@ -13,6 +13,15 @@ div.olLayerDiv {
    -moz-user-select: none;
    -khtml-user-select: none;
 }
+/* 
+orfur google popup gizlendi.
+*/
+.olLayerGooglePoweredBy.olLayerGoogleV3.gmnoprint {
+    visibility: hidden;
+}
+/*
+end google popup gizlendi.
+*/
 
 .olLayerGoogleCopyright {
     left: 2px;
