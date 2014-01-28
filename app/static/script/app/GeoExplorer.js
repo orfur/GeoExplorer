@@ -149,11 +149,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 ptype: "gxp_legend"
             },{
                 leaf: true, 
-                text: gxp.plugins.Featurekazihatti.prototype.tooltip, 
+                text: "Adres Sorgu", 
                 checked: true, 
-                iconCls: "gxp-icon-addfeature",
+                iconCls: "gxp-icon-find",
                 numberOfButtons: 2,
-                ptype: "gxp_featurekazihatti"
+                ptype: "gxp_kocaeligissorgu"
             },{
                 leaf: true,
                 text: gxp.plugins.GoogleEarth.prototype.tooltip,
