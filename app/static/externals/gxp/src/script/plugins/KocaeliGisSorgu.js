@@ -323,9 +323,18 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			    fieldLabel: as_labelField,
 			    store: ao_store,
 			    valueField: 'kod',
-			    displayField: 'ad'
+			    displayField: 'ad',
+			    sorters: {
+                    property: 'ad',
+                    direction: 'DESC'
+                }
 		  });
 		  cbxCombobox.setValue("-");
+		  cbxCombobox.store.sort('ad', 'DESC');
+//		  cbxCombobox.store.sort({
+//            property: 'ad',
+//            direction: 'DESC'
+//			  });
 		  return cbxCombobox;
     },
 	getFCollectionMaxExtent: function(ao_featureColl)
@@ -479,9 +488,9 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 		 addressDataSet.add(new Ext.data.Record({"ad":"Mahalle","kod":"-"}));
 		 
 			 
-
+		 
 			 
-	    
+	   
 		switch (this.enumAdresDeger)
 		{
 			/*			case this.EnumAdres.ILCE:
@@ -496,11 +505,12 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 				 }); 
 				
 				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
+					addressDataSet.data.items[0].data.ad = " Mahalle Seçiniz";
 				this.cbx_mahalle.bindStore(addressDataSet);
 				this.cbx_mahalle.setValue("-");
-				this.clearCbx(this.cbx_sokak, "Sokak Seçiniz");
-				this.clearCbx(this.cbx_kapi, "Kapı Seçiniz");
+				
+				this.clearCbx(this.cbx_sokak, " Sokak Seçiniz");
+				this.clearCbx(this.cbx_kapi, " Kapı Seçiniz");
 				this.cbx_sokak.setValue("-");
 				this.cbx_kapi.setValue("-");
 				break;
@@ -511,10 +521,11 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 				 }); 
 				
 				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
-				addressDataSet.data.items[0].data.ad = "Sokak Seçiniz";
+					addressDataSet.data.items[0].data.ad = " Mahalle Seçiniz";
+				addressDataSet.data.items[0].data.ad = " Sokak Seçiniz";
 				this.cbx_sokak.bindStore(addressDataSet);
-				this.clearCbx(this.cbx_kapi, "Kapı Seçiniz");
+//				this.cbx_sokak.store.sort('ad', 'ASC');
+				this.clearCbx(this.cbx_kapi, " Kapı Seçiniz");
 				this.cbx_kapi.setValue("-");
 				break;
 			case this.EnumAdres.KAPI:
@@ -522,9 +533,10 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 					 addressDataSet.add(new Ext.data.Record({'ad':bilgi.attributes["kapi_no"],'kod':bilgi.attributes["adres_id"]}));
 				 }); 
 				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
-				addressDataSet.data.items[0].data.ad = "Kapı Seçiniz";
+					addressDataSet.data.items[0].data.ad = " Mahalle Seçiniz";
+				addressDataSet.data.items[0].data.ad = " Kapı Seçiniz";
 				this.cbx_kapi.bindStore(addressDataSet);
+//				this.cbx_kapi.store.sort('ad', 'ASC');
 				break; 
 /*			case this.EnumAdres.KOY:
 				if(addressDataSet.data.items.length>0)
@@ -540,7 +552,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 				break;
 */ 
 		}
-
+		addressDataSet.sort('ad', 'ASC');
 
 	     
 			 

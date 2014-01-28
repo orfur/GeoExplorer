@@ -225,7 +225,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                         	 this.on({
                                  ready: function() {
                                 	 //orfur kurum kaydedildi
-                                	 //this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"POST");
+                                	 this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"POST");
                                  }
                         	 });
                          }
