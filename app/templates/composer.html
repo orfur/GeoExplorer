@@ -41,7 +41,7 @@
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
         GeoExt.Lang.set("tr");
-        Proj4js.defs["EPSG:40000"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
+        Proj4js.defs["EPSG:40001"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
         Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,

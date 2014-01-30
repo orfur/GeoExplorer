@@ -240,6 +240,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	                               break;
 	                         case "mahallesokak":
 	                        	   layers.mahallesokak  = layer;
+	                        	   break;
 	                               
 	                    }
 	              });

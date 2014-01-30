@@ -51,14 +51,14 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
             	  });
               	
                   var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
-              	  var transGeom  = lonlat.transform(new OpenLayers.Projection(this.map.projection),new OpenLayers.Projection("EPSG:40000"));
+              	  var transGeom  = lonlat.transform(new OpenLayers.Projection(this.map.projection),new OpenLayers.Projection("EPSG:40001"));
               	  //alert(transGeom.lon + " " + transGeom.lat);
               	  
               	  //kapi bilgisi
               	  //var response = this.scope.queryOnLayer(this.scope.dataLayers.kapi,"KAPI_NO,NVI_CSBMKOD,NVI_BINAKOD,PARSEL_ID","DWITHIN(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"),1,meters)");
 				var intersectGeometry = new OpenLayers.Bounds();
-              	intersectGeometry.extend(new OpenLayers.LonLat(lonlat.lon-2,lonlat.lat-2));
-              	intersectGeometry.extend(new OpenLayers.LonLat(lonlat.lon+2,lonlat.lat+2));
+              	intersectGeometry.extend(new OpenLayers.LonLat((lonlat.lon+2)-2,(lonlat.lat-79)-2));
+              	intersectGeometry.extend(new OpenLayers.LonLat((lonlat.lon+2)+2,(lonlat.lat-79)+2));
 				
 				adresStore.data["NVI_CSBMKOD"]="0";
 				adresStore.data["KAPI_NO"]="0";
@@ -71,7 +71,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 				adresStore.data["BINA_ADI"] = "-";
 				adresStore.data["BINA_KODU"] ="0";
               	try{
-              	var response = this.scope.queryOnLayer(this.scope.dataLayers.kapi,"kapi_no,uavt_adres_id,yol_adi,mahalle_adi","INTERSECTS(geometry,"+ intersectGeometry.toGeometry().toString() +")");
+              	var response = this.scope.queryOnLayer(this.scope.dataLayers.kapi,"kapi_no,uavt_adres_id,yol_adi,mahalle_adi,yapi_adi","INTERSECTS(geometry,"+ intersectGeometry.toGeometry().toString() +")");
               	  if(response.length>0)
               	  {
 		              	  Ext.each(response, function(kapi)
@@ -81,22 +81,38 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 								adresStore.data["BINA_KODU"]   =  kapi.attributes["uavt_adres_id"];
 								adresStore.data["MAH_ADI"]   =  kapi.attributes["mahalle_adi"];
 								adresStore.data["YOL_ISMI"]   =  kapi.attributes["yol_adi"];
+								adresStore.data["BINA_ADI"] = 	 kapi.attributes["yapi_adi"];
 								
-								response = this.scope.queryOnLayer(this.scope.dataLayers.bina,"yapi_adi,yapi_uavt_id","yapi_uavt_id="+ kapi.attributes["uavt_adres_id"]);
+								response = this.scope.queryOnLayer(this.scope.dataLayers.bina,"yapi_adi,uavt_bina_kod","INTERSECTS(geometry,"+ intersectGeometry.toGeometry().toString() +")");//"yapi_uavt_id="+ kapi.attributes["uavt_adres_id"]);
 								Ext.each(response, function(bina)
 		                      	{
-									adresStore.data["BINA_ADI"] = 	 bina.attributes["yapi_adi"];
+//									adresStore.data["BINA_ADI"] = 	 bina.attributes["yapi_adi"];
+									adresStore.data["NVI_CSBMKOD"] = 	 bina.attributes["uavt_bina_kod"];
+									adresStore.data["BINA_KODU"]   =  kapi.attributes["uavt_bina_kod"];
 									
 								});
 							
 		              		  	
 		              	  },this);
+		              	  
+              		  /*	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,uavt_kod","INTERSECTS(geometry,POINT("+lonlat.lon+ " " + lonlat.lat +"))");
+                    	  Ext.each(response, function(mah)
+                    	  {                            		  	
+                    		  	adresStore.data["MAH_ID"] = mah.attributes["uavt_kod"];
+                    		  	adresStore.data["MAH_ADI"] = mah.attributes["mahalle_adi"];
+                    		  	//adresStore.data["ILCE_ID"] = mah.attributes["ILCEID"];
+                    		  	//adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
+                    		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
+                    		  	
+                    	  });
+                      */
               	  }
               	  else
               	  {
               		  
           		  	  //sokak bilgisi
-          		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"yol_id,yol_adi,yol_uavt_id,geometryetry","DWITHIN(geometryetry,POINT("+lonlat.lon+ " " + lonlat.lat +"),2,meters)");
+          		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"yol_id,yol_adi,geometryetry","DWITHIN(geometryetry,POINT("+ (lonlat.lon+2) + " " + (lonlat.lat-79) +"),2,meters)");
+          		  	  
           		  	  if(response.length>0)
           		  	  {
 		                  	  Ext.each(response, function(sokak)
@@ -106,16 +122,27 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		                  		  	//alert("YOL_ISMI:" + sokak.attributes["YOL_ISMI"]);
 		                  		  	
 		                		  	  //mahalle-ilce bilgisi
-		                  		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,mahalle_id","INTERSECTS(geometry,"+sokak.geometry.components[0].simplify().toString()+")");
+		                  		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,uavt_kod","INTERSECTS(geometry,"+sokak.geometry.components[0].simplify().toString()+")");
 		                        	  Ext.each(response, function(mah)
 		                        	  {                            		  	
-		                        		  	adresStore.data["MAH_ID"] = mah.attributes["mahalle_id"];
+		                        		  	adresStore.data["MAH_ID"] = mah.attributes["uavt_kod"];
 		                        		  	adresStore.data["MAH_ADI"] = mah.attributes["mahalle_adi"];
 		                        		  	//adresStore.data["ILCE_ID"] = mah.attributes["ilce_id"];
 		                        		  	//adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
 		                        		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
 		                        		   	
 		                        	  }); 
+		                        	  
+		                		  	  //mahalle-ilce bilgisi
+		                  		  	  /*response = this.scope.queryOnLayer(this.scope.dataLayers.mahallesokak,"yol_id,mahalle_yol_uavt_id","yol_id="+sokak.attributes["yol_id"]);
+		                        	  Ext.each(response, function(mahsok)
+		                        	  {                            		  	
+		                        		  	adresStore.data["YOL_ID"] = mahsok.attributes["mahalle_yol_uavt_id"];
+		                        		   	
+		                        	  });
+		                        	  */
+		                        	  
+		                        	  
 		                  		  	
 		                  	  },this);
           		  	  }
@@ -123,10 +150,10 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
           		  	  {
           		  		  
             		  	  //mahalle-ilce bilgisi
-              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,mahalle_id","INTERSECTS(geometry,POINT("+lonlat.lon+ " " + lonlat.lat +"))");
+              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,uavt_kod","INTERSECTS(geometry,POINT("+lonlat.lon+ " " + lonlat.lat +"))");
                     	  Ext.each(response, function(mah)
                     	  {                            		  	
-                    		  	adresStore.data["MAH_ID"] = mah.attributes["mahalle_id"];
+                    		  	adresStore.data["MAH_ID"] = mah.attributes["uavt_kod"];
                     		  	adresStore.data["MAH_ADI"] = mah.attributes["mahalle_adi"];
                     		  	//adresStore.data["ILCE_ID"] = mah.attributes["ILCEID"];
                     		  	//adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
@@ -271,7 +298,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		    params: {	
 		    	"version" : "1.0.0",//layerTemp.params.VERSION,
 		    	"request" : "GetFeature",
-		    	"srs" : "EPSG:40000",
+		    	"srs" : "EPSG:40001",
 		    	"outputFormat" : "json",
 		    	"maxfeatures" : "1",
 		    	"typename" : layerTemp.params.LAYERS,
