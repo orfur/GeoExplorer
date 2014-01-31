@@ -127,7 +127,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 checked: true, 
                 iconCls: "gxp-icon-zoom-in",
                 numberOfButtons: 1,
-                ptype: "gxp_zoom"
+                ptype: "gxp_zoom",
+               toggleGroup: this.toggleGroup
             }, {
                 leaf: true, 
                 text: gxp.plugins.NavigationHistory.prototype.previousTooltip + " / " + gxp.plugins.NavigationHistory.prototype.nextTooltip, 
