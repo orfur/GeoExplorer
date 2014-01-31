@@ -50,6 +50,9 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
             		  fields: ['NVI_CSBMKOD','BINA_KODU','BINA_ADI','KAPI_NO','YOL_ID','YOL_ISMI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI']
             	  });
               	
+				  var lonlatWGS84 = this.map.getLonLatFromViewPortPx(e.xy);
+				  lonlatWGS84 = lonlatWGS84.transform(new OpenLayers.Projection(this.map.projection),new OpenLayers.Projection("EPSG:4326"));
+            	  
                   var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
               	  var transGeom  = lonlat.transform(new OpenLayers.Projection(this.map.projection),new OpenLayers.Projection("EPSG:40001"));
               	  //alert(transGeom.lon + " " + transGeom.lat);
@@ -66,7 +69,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 				adresStore.data["YOL_ISMI"] = "-";
 				adresStore.data["MAH_ID"] = "0";
 				adresStore.data["MAH_ADI"] = "-";
-				adresStore.data["ILCE_ID"] = "0";
+				adresStore.data["ILCE_ID"] = "2014";//UAVT KODU
 				adresStore.data["ILCE_ADI"] = "SULTANBEYLİ";
 				adresStore.data["BINA_ADI"] = "-";
 				adresStore.data["BINA_KODU"] ="0";
@@ -78,7 +81,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		              	  {
 		              		  	//adresStore.data["NVI_CSBMKOD"] =  kapi.attributes["NVI_CSBMKOD"];
 		              		  	adresStore.data["KAPI_NO"] 	   =  kapi.attributes["kapi_no"];
-								adresStore.data["BINA_KODU"]   =  kapi.attributes["uavt_adres_id"];
+								adresStore.data["BINA_KODU"]   =  kapi.attributes["uavt_bina_kod"];
 								adresStore.data["MAH_ADI"]   =  kapi.attributes["mahalle_adi"];
 								adresStore.data["YOL_ISMI"]   =  kapi.attributes["yol_adi"];
 								adresStore.data["BINA_ADI"] = 	 kapi.attributes["yapi_adi"];
@@ -94,18 +97,6 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 							
 		              		  	
 		              	  },this);
-		              	  
-              		  /*	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,uavt_kod","INTERSECTS(geometry,POINT("+lonlat.lon+ " " + lonlat.lat +"))");
-                    	  Ext.each(response, function(mah)
-                    	  {                            		  	
-                    		  	adresStore.data["MAH_ID"] = mah.attributes["uavt_kod"];
-                    		  	adresStore.data["MAH_ADI"] = mah.attributes["mahalle_adi"];
-                    		  	//adresStore.data["ILCE_ID"] = mah.attributes["ILCEID"];
-                    		  	//adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
-                    		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
-                    		  	
-                    	  });
-                      */
               	  }
               	  else
               	  {
@@ -122,7 +113,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		                  		  	//alert("YOL_ISMI:" + sokak.attributes["YOL_ISMI"]);
 		                  		  	
 		                		  	  //mahalle-ilce bilgisi
-		                  		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,uavt_kod","INTERSECTS(geometry,"+sokak.geometry.components[0].simplify().toString()+")");
+		                  		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"mahalle_adi,mahalle_id,uavt_kod","INTERSECTS(geometry,"+sokak.geometry.components[0].simplify().toString()+")");
 		                        	  Ext.each(response, function(mah)
 		                        	  {                            		  	
 		                        		  	adresStore.data["MAH_ID"] = mah.attributes["uavt_kod"];
@@ -130,17 +121,21 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		                        		  	//adresStore.data["ILCE_ID"] = mah.attributes["ilce_id"];
 		                        		  	//adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
 		                        		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
+		                        		  	
+				                		  	  //mahalle-ilce bilgisi
+				                  		  	  /*response = this.scope.queryOnLayer(this.scope.dataLayers.mahallesokak,"yol_id,mahalle_yol_uavt_id","yol_id="+sokak.attributes["yol_id"]+ 
+				                  		  			  " and mahalle_id="+mah.attributes["mahalle_id"]);
+				                        	  Ext.each(response, function(mahsok)
+				                        	  {                            		  	
+				                        		  	adresStore.data["YOL_ID"] = mahsok.attributes["mahalle_yol_uavt_id"];
+				                        		   	
+				                        	  });
+				                        	  */
 		                        		   	
 		                        	  }); 
 		                        	  
-		                		  	  //mahalle-ilce bilgisi
-		                  		  	  /*response = this.scope.queryOnLayer(this.scope.dataLayers.mahallesokak,"yol_id,mahalle_yol_uavt_id","yol_id="+sokak.attributes["yol_id"]);
-		                        	  Ext.each(response, function(mahsok)
-		                        	  {                            		  	
-		                        		  	adresStore.data["YOL_ID"] = mahsok.attributes["mahalle_yol_uavt_id"];
-		                        		   	
-		                        	  });
-		                        	  */
+
+		                        	  
 		                        	  
 		                        	  
 		                  		  	
@@ -168,6 +163,18 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
               	  
 		              	try //vaadin service erisim icin kullanilan fonksiyon 
 						{
+							var mapExtent = this.map.getExtent();
+							var mapImageUrl = "";
+							mapImageUrl += this.scope.dataLayers.mahalle.store.url.replace(/ows/gi,"wms")
+										+ "?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS="
+										+ this.map.projection;
+							mapImageUrl += "&BBOX="+ mapExtent.toString();
+							mapImageUrl += "&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=UniversalWorkspace:SDE.KOYMAHALLE,UniversalWorkspace:SDE.KARAYOLU,UniversalWorkspace:SDE.KOCAELI_KAPI,UniversalWorkspace:SDE.KOCAELI_YAPI";
+							mapImageUrl += "&WIDTH=" + this.map.size.w 
+										+ "&HEIGHT=" + this.map.size.h 
+										+ "&TILED=true&TRANSPARENT=TRUE";
+							mapImageUrl = mapImageUrl.replace(/:/gi,
+											"<>");
 								//Ext.MessageBox.minWidth = 300; 
 		              		Ext.MessageBox.buttonText = {
 		              	            ok     : "Tamam",
@@ -192,7 +199,11 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 																adresStore.data["ILCE_ID"]	+':'+
 																adresStore.data["ILCE_ADI"] +':'+
 																adresStore.data["BINA_ADI"]	+':'+
-																adresStore.data["BINA_KODU"]);
+																adresStore.data["BINA_KODU"]+ ':'
+																+ lonlatWGS84.lon + ':'
+																+ lonlatWGS84.lat + ':'
+																+ mapExtent + ':'
+																+ mapImageUrl);
 								});
 						}						    			
 						catch(err)
