@@ -12206,8 +12206,7 @@ gxp.plugins.FlexCityAdresAl = Ext
 														}
 													}
 													try {
-														var mapExtent = this.map
-																.getExtent();
+														var mapExtent = this.map.getExtent();
 														var mapImageUrl = "";
 														mapImageUrl += this.scope.dataLayers.mahalle.store.url
 																.replace(
