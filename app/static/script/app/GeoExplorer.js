@@ -272,7 +272,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     		{
     			
     			var lo_tempArray = userJobTitle.split("-");
-    			if(lo_tempArray.length>1&&this.isInt(lo_tempArray[0]))
+    			if(lo_tempArray.length>0&&this.isInt(lo_tempArray[0]))
     				defaultMap = lo_tempArray[0]
     			
     		}

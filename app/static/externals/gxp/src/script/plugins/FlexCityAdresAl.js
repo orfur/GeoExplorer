@@ -101,8 +101,8 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
               	  else
               	  {
               		  
-          		  	  //sokak bilgisi
-          		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"yol_id,yol_adi,geometryetry","DWITHIN(geometryetry,POINT("+ (lonlat.lon+2) + " " + (lonlat.lat-79) +"),2,meters)");
+          		  	  //sokak bilgisi 
+          		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"yol_id,yol_adi,geometry","DWITHIN(geometry,POINT("+ (lonlat.lon+2) + " " + (lonlat.lat-79) +"),2,meters)");
           		  	  
           		  	  if(response.length>0)
           		  	  {
