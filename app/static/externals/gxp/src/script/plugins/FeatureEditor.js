@@ -696,7 +696,8 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             "Line": OpenLayers.Handler.Path,
             "Curve": OpenLayers.Handler.Path,
             "Polygon": OpenLayers.Handler.Polygon,
-            "Surface": OpenLayers.Handler.Polygon
+            "Surface": OpenLayers.Handler.Polygon,
+            "Geometry": OpenLayers.Handler.Polygon
         };
         var simpleType = mgr.geometryType.replace("Multi", "");
         var Handler = handlers[simpleType];
