@@ -697,7 +697,7 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             "Curve": OpenLayers.Handler.Path,
             "Polygon": OpenLayers.Handler.Polygon,
             "Surface": OpenLayers.Handler.Polygon,
-            "Geometry": OpenLayers.Handler.Polygon
+            "Geometry": OpenLayers.Handler.Polygon	//orfur - geometry tipi olmayan geometry nesneleri polygon olarak işleme alındı. istka calisması
         };
         var simpleType = mgr.geometryType.replace("Multi", "");
         var Handler = handlers[simpleType];
