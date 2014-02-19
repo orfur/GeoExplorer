@@ -200,7 +200,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			                		this.enumAdresDeger=this.EnumAdres.KAPI;
 			    	                var featuresSokaklar = this.queryWFSLayerComboBox(this.layers.kapi,"propertyName=adres_id,kapi_no"+"&CQL_FILTER=sokakid=" + this.cbx_sokak.getValue());//	INTERSECTS(geometryetry," + this.cbx_mahalle.getValue().geometry.components[0]+ ")");
 			    	                this.getAddress_result(featuresSokaklar);
-			                		this.queryLayer(this.layers.sokak , "yol_id=" + this.cbx_sokak.getValue(),"&propertyName=geometry",true);
+			                		this.queryLayer(this.layers.mahallesokak , "yol_id=" + this.cbx_sokak.getValue(),"&propertyName=geometry",true);
 			                	}},this);
 	                this.cbx_kapi.on('select', function(box, record, index) {
 			                	if(index>0){
