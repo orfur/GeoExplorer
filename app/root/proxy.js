@@ -50,7 +50,7 @@ var getUrlProps = exports.getUrlProps = function(url) {
             // this could potentially be removed if the following ticket is closed
             // https://github.com/ringo/ringojs/issues/issue/121
             // but, it could make sense to keep it here as well
-            [username, password] = userInfo.split(":");
+            [username, password] = userInfo.split(":");k
             url = url.replace(userInfo + "@", "");
         }
         else
