@@ -46,7 +46,7 @@
             authStatus: <% status %>,
             proxy: "proxy?url=",
             printService: "/geoserver/pdf/",
-            wfsURL : "http://geoserver.kocaeli.bel.tr:8090/geoserver/wfs",//"http://10.0.0.153:8080/geoserver/wfs",
+            wfsURL : "http://geoserver.kocaeli.bel.tr:8890/geoserver/wfs",//"http://10.0.0.153:8080/geoserver/wfs",
             about: {
                 title: "Umi Map Test Application",
                 "Amaç": "Universal Mekansal İşlemci ",
@@ -55,7 +55,7 @@
             defaultSourceType: "gxp_wmscsource",
             sources: {
                 local: {
-                	url: "http://geoserver.kocaeli.bel.tr:8090/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",
+                	url: "http://geoserver.kocaeli.bel.tr:8890/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",
                     title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },
@@ -63,15 +63,15 @@
                 	url: "http://gis.kocaeli.bel.tr/ArcGIS/services/IMAR_YAYIN/MapServer/WMSServer?style=",
                     title: "Imar Katmanları",
                     ptype: "gxp_wmscsource"
-                },
-                /*suite: {
+                }
+                /*,suite: {
                     url: "http://10.0.0.153:8080/geoserver/ows",
                     title: "UniGeoSever"
                 },
                 mapquest: { 
                     ptype: "gxp_mapquestsource"
-                },*/
-                osm: {
+                }*/
+                ,osm: {
                     ptype: "gxp_osmsource"
                 },
                 google: {

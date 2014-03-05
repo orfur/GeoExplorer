@@ -71,25 +71,25 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 				adresStore.data["BINA_ADI"] = "-";
 				adresStore.data["BINA_KODU"] ="0";
               	try{
-              	var response = this.scope.queryOnLayer(this.scope.dataLayers.kapi,"KAPI_NO,NVI_CSBMKOD,NVI_BINAKOD,PARSEL_ID","INTERSECTS(SHAPE,"+ intersectGeometry.toGeometry().toString() +")");
+              	var response = this.scope.queryOnLayer(this.scope.dataLayers.kapi,"KAPINO,NVICSBMKOD,NVIBINAKOD,PARSEL_KN,KBB_BINAID","INTERSECTS(SHAPE,"+ intersectGeometry.toGeometry().toString() +")");
               	  if(response.length>0)
               	  {
 		              	  Ext.each(response, function(kapi)
 		              	  {
-		              		  	adresStore.data["NVI_CSBMKOD"] =  kapi.attributes["NVI_CSBMKOD"];
-		              		  	adresStore.data["KAPI_NO"] 	   =  kapi.attributes["KAPI_NO"];
-								adresStore.data["BINA_KODU"]   =  kapi.attributes["NVI_BINAKOD"];
-								response = this.scope.queryOnLayer(this.scope.dataLayers.bina,"YAPIADI,NVIBINAKOD","NVIBINAKOD="+ kapi.attributes["NVI_BINAKOD"]);
+		              		  	adresStore.data["NVI_CSBMKOD"] =  kapi.attributes["NVICSBMKOD"];
+		              		  	adresStore.data["KAPI_NO"] 	   =  kapi.attributes["KAPINO"];
+								adresStore.data["BINA_KODU"]   =  kapi.attributes["NVIBINAKOD"];
+								response = this.scope.queryOnLayer(this.scope.dataLayers.bina,"ADI,KBB_BINAID","KBB_BINAID="+ kapi.attributes["KBB_BINAID"]);
 								Ext.each(response, function(bina)
 		                      	{
-									adresStore.data["BINA_ADI"] = 	 bina.attributes["YAPIADI"];
+									adresStore.data["BINA_ADI"] = 	 bina.attributes["ADI"];
 									
 								});
 								
 		              		  	//alert("kapiNo:" + kapi.attributes["KAPI_NO"]);
 		              		  	 
 		              		  	  //sokak bilgisi
-		              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"YOL_ID,YOL_ISMI,CSBMKOD,SHAPE","CSBMKOD="+ kapi.attributes["NVI_CSBMKOD"]);
+		              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"YOL_ID,YOL_ISMI,CSBMK1,SHAPE","CSBMK1="+ kapi.attributes["NVICSBMKOD"] + " or " + "CSBMK2="+ kapi.attributes["NVICSBMKOD"]);
 		                      	  Ext.each(response, function(sokak)
 		                      	  {
 		                      		  	adresStore.data["YOL_ID"] 	=  sokak.attributes["YOL_ID"];
@@ -99,13 +99,13 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		                      		  	
 		                    		  	  //mahalle-ilce bilgisi
 		                      		  	  //response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID","INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")");
-		                    		  	response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID","INTERSECTS(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"))");  
+		                    		  	response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCE_ADI,ILCE_ID,MAH_ADI,MAH_ID","INTERSECTS(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"))");  
 		                      		  	Ext.each(response, function(mah)
 		                            	  {                            		  	
-		                            		  	adresStore.data["MAH_ID"] = mah.attributes["MAHALLEID"];
-		                            		  	adresStore.data["MAH_ADI"] = mah.attributes["KOYMAHALLEADI"];
-		                            		  	adresStore.data["ILCE_ID"] = mah.attributes["ILCEID"];
-		                            		  	adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
+		                            		  	adresStore.data["MAH_ID"] = mah.attributes["MAH_ID"];
+		                            		  	adresStore.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
+		                            		  	adresStore.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
+		                            		  	adresStore.data["ILCE_ADI"] = mah.attributes["ILCE_ADI"];
 		                            		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
 		                            		  	
 		                            	  });
@@ -118,7 +118,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
               	  {
               		  
           		  	  //sokak bilgisi
-          		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"YOL_ID,YOL_ISMI,CSBMKOD,SHAPE","DWITHIN(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"),2,meters)");
+          		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"YOL_ID,YOL_ISMI,CSBMK1,SHAPE","DWITHIN(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"),2,meters)");
           		  	  if(response.length>0)
           		  	  {
 		                  	  Ext.each(response, function(sokak)
@@ -128,13 +128,13 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		                  		  	//alert("YOL_ISMI:" + sokak.attributes["YOL_ISMI"]);
 		                  		  	
 		                		  	  //mahalle-ilce bilgisi
-		                  		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID","INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")");
+		                  		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCE_ADI,ILCE_ID,MAH_ADI,MAH_ID","INTERSECTS(SHAPE,"+sokak.geometry.simplify().toString()+")");//sokak.geometry.components[0].simplify().toString()+")");
 		                        	  Ext.each(response, function(mah)
 		                        	  {                            		  	
-		                        		  	adresStore.data["MAH_ID"] = mah.attributes["MAHALLEID"];
-		                        		  	adresStore.data["MAH_ADI"] = mah.attributes["KOYMAHALLEADI"];
-		                        		  	adresStore.data["ILCE_ID"] = mah.attributes["ILCEID"];
-		                        		  	adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
+	                            		  	adresStore.data["MAH_ID"] = mah.attributes["MAH_ID"];
+	                            		  	adresStore.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
+	                            		  	adresStore.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
+	                            		  	adresStore.data["ILCE_ADI"] = mah.attributes["ILCE_ADI"];
 		                        		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
 		                        		   	
 		                        	  }); 
@@ -145,13 +145,13 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
           		  	  {
           		  		  
             		  	  //mahalle-ilce bilgisi
-              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID","INTERSECTS(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"))");
+              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.mahalle,"ILCE_ADI,ILCE_ID,MAH_ADI,MAH_ID","INTERSECTS(SHAPE,POINT("+lonlat.lon+ " " + lonlat.lat +"))");
                     	  Ext.each(response, function(mah)
                     	  {                            		  	
-                    		  	adresStore.data["MAH_ID"] = mah.attributes["MAHALLEID"];
-                    		  	adresStore.data["MAH_ADI"] = mah.attributes["KOYMAHALLEADI"];
-                    		  	adresStore.data["ILCE_ID"] = mah.attributes["ILCEID"];
-                    		  	adresStore.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
+                  		  	adresStore.data["MAH_ID"] = mah.attributes["MAH_ID"];
+                		  	adresStore.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
+                		  	adresStore.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
+                		  	adresStore.data["ILCE_ADI"] = mah.attributes["ILCE_ADI"];
                     		  	//alert( mah.attributes["KOYMAHALLEADI"] + " " +  mah.attributes["ILCEADI"]);
                     		  	
                     	  });

@@ -4,15 +4,9 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     
       ptype: "gxp_kocaeligissorgu",
       outputTarget: "map",
-      popupTitle: "Kocaeli Mahalle/Sokak Sorgusu",
-      tooltip: "Kocaeli Mahalle/Sokak Sorgusu",
-      menuText: "Kocaeli Mahalle/Sokak Sorgusu",
-      SERVICE_URL:"http://gis.kocaeli.bel.tr/nvi/service1.asmx",
-      ILCE:"/getIlce?",
-      MAHALLELER:"/getKoyMahalle?",
-      SOKAKLAR:"/getCadde?",
-      KAPILAR:"/GetKapiNoByCaddeSokak?",
-      KOYLER:"/getkoyler?",
+      popupTitle: "Mahalle/Sokak Sorgusu",
+      tooltip: "Mahalle/Sokak Sorgusu",
+      menuText: "Mahalle/Sokak Sorgusu",
       featureLayer:null,
       style: null,
       EnumAdres:null,
@@ -35,7 +29,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     			  			KAPI:3,
     			  			KOY:4
     			  		}
-    	  this.enumAdresDeger=this.EnumAdres.ILCE;
+    	  this.enumAdresDeger=this.EnumAdres.MAHALLE;
     	  
     	  
     	  
@@ -132,7 +126,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
           			console.log("CallzoomToFeature: layerName=" + ao_layerName + " CQL_FILTER=" + as_cqlQuery );
           			var lo_layer = this.getLayer(ao_layerName);
           			if(lo_layer!=null)
-          				this.queryLayer(lo_layer, as_cqlQuery,true);
+          				this.queryLayer(lo_layer, as_cqlQuery,"",true);
           			else
           				alert("Katman bulunamadı.");
                   },
@@ -146,7 +140,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
         			if(lo_layer!=null)
         			{
         				var ls_featureIdsQuery = this.getQueryObjectIDs(lo_layer.data.name,as_objectIDs); //featureid filter olusturuluyor. (, ile ayrılmıs objectidler geliyor.)
-        				this.queryLayer(lo_layer, ls_featureIdsQuery,false);
+        				this.queryLayer(lo_layer, ls_featureIdsQuery,"",false);
         			}
         			else
         				alert("Katman bulunamadı.");
@@ -180,48 +174,42 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	            { 	          	    
 	            	this.enumAdresDeger = this.EnumAdres.ILCE;//default value
 	            	this.layers = this.getLayers();
-	                this.cbx_ilce  = this.createCbx("İlçe",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['İlçe Seçiniz.', '-']]}));
+	            	this.cbx_ilce  = this.createCbx("İlce",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['İlçe Seçiniz.', '-']]}));
 	                this.cbx_mahalle  = this.createCbx("Mahalle",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['Mahalle Seçiniz.', '-']]}));
 	                this.cbx_sokak  = this.createCbx("Sokak",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['Sokak Seçiniz.', '-']]}));
 	                this.cbx_kapi  = this.createCbx("Kapi",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['Kapı Seçiniz.', '-']]}));
-	                this.cbx_koy   = this.createCbx("Köy",new Ext.data.ArrayStore({id: 0,fields: ['ad','kod'], data: [['Köy Seçiniz.', '-']]}));
 	                
-	                this.getAddressDataset(this.SERVICE_URL + this.ILCE,"İlçe Seçiniz")
+	                var featuresIlce = this.queryWFSLayerComboBox(this.layers.ilce,"propertyName=ILCEADI,ILCEID&CQL_FILTER=1=1");
+	                this.getAddress_result(featuresIlce);
+
 	                this.cbx_ilce.on('select', function(box, record, index) {
-			                	if(index>0){
-			                		 this.enumAdresDeger=this.EnumAdres.KOY;
-			                		this.getAddressDataset(this.SERVICE_URL + this.KOYLER + "ilce_kodu="+ this.cbx_ilce.getValue());
-			                		this.queryLayer(this.layers.ilce , "ILCEID=" + this.cbx_ilce.getValue(),true);
-			                	}},this);
-	                
-	                this.cbx_koy.on('select', function(box, record, index) {
 	                	if(index>0){
-	                		 this.enumAdresDeger=this.EnumAdres.MAHALLE;
-	                		this.getAddressDataset(this.SERVICE_URL + this.MAHALLELER + "koy_kodu="+ this.cbx_koy.getValue());
-	                		this.queryLayer(this.layers.koy , "KOY_ID=" + this.cbx_koy.getValue(),true);
+	                		this.enumAdresDeger=this.EnumAdres.MAHALLE;
+	    	                var featuresMahalleler = this.queryWFSLayerComboBox(this.layers.mahalle,"propertyName=MAH_ID,MAH_ADI"+"&CQL_FILTER=ILCE_ID="+this.cbx_ilce.getValue().attributes["ILCEID"] );//	INTERSECTS(geometryetry," + this.cbx_mahalle.getValue().geometry.components[0]+ ")");
+	    	                this.getAddress_result(featuresMahalleler);
+							this.queryLayer(this.layers.ilce,"ILCEID=" + this.cbx_ilce.getValue().attributes["ILCEID"],"&propertyName=SHAPE",true);
 	                	}},this);
 	                
 	                this.cbx_mahalle.on('select', function(box, record, index) {
 			                	if(index>0){
-			                		 this.enumAdresDeger=this.EnumAdres.SOKAK;
-			                		this.getAddressDataset(this.SERVICE_URL + this.SOKAKLAR + "ilce_kodu="+ this.cbx_ilce.getValue() + "&mahalle_kodu=" + this.cbx_mahalle.getValue());
-			                		//this.queryLayer(this.layers.mahalle , "MAHALLEID=" + this.cbx_mahalle.getValue(),true);
-									this.queryLayer(this.layers.koy , "MAH_ID=" + this.cbx_mahalle.getValue(),true);
+			                		this.enumAdresDeger=this.EnumAdres.SOKAK;
+			    	                var featuresSokaklar = this.queryWFSLayerComboBox(this.layers.sokak,"propertyName=CSBMK1,CSBMK2,YOL_ISMI,YOL_ID,MAKS_KIMLIK_NO"+"&CQL_FILTER=MAH1_ID="+this.cbx_mahalle.getValue().attributes["MAH_ID"] + "%20or%20MAH2_ID="+this.cbx_mahalle.getValue().attributes["MAH_ID"] );
+			    	                this.getAddress_result(featuresSokaklar);
+									this.queryLayer(this.layers.mahalle,"MAH_ID=" + this.cbx_mahalle.getValue().attributes["MAH_ID"],"&propertyName=SHAPE",true);
 			                	}},this);
 	                
 	                this.cbx_sokak.on('select', function(box, record, index) {
 			                	if(index>0){
 			                		this.enumAdresDeger=this.EnumAdres.KAPI;
-			                		this.getAddressDataset(this.SERVICE_URL + this.KAPILAR + "CaddeSokakID=" + this.cbx_sokak.getValue());
-			                		this.queryLayer(this.layers.sokak , "CSBMKOD=" + this.cbx_sokak.getValue(),true);
+			    	                var featuresSokaklar = this.queryWFSLayerComboBox(this.layers.kapi,"propertyName=MAKS_KIMLIK_NO,KAPINO"+"&CQL_FILTER=MAKS_CSBM_KN=" + this.cbx_sokak.getValue().attributes["MAKS_KIMLIK_NO"]);
+			    	                this.getAddress_result(featuresSokaklar);
+			                		this.queryLayer(this.layers.sokak , "YOL_ID=" + this.cbx_sokak.getValue().attributes["YOL_ID"],"&propertyName=SHAPE",true);
 			                	}},this);
-	                
 	                this.cbx_kapi.on('select', function(box, record, index) {
 			                	if(index>0){
-			                		this.queryLayer(this.layers.kapi , "NVI_BINAKOD=" + this.cbx_kapi.getValue(),true);
+			                		this.queryLayer(this.layers.kapi , "CQL_FILTER=MAKS_KIMLIK_NO=" + this.cbx_kapi.getValue(),true);
 			                	}},this);
-	                
-	                this.createForm([this.cbx_ilce, this.cbx_koy, this.cbx_mahalle,this.cbx_sokak,this.cbx_kapi]);
+	                this.createForm([this.cbx_ilce,this.cbx_mahalle,this.cbx_sokak,this.cbx_kapi]);
 	
 	            },
 	            mapPanel: this.target.mapPanel,scope:this})];
@@ -252,6 +240,10 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	                               break;
 	                         case "koy":
 	                        	   layers.koy  = layer;
+	                               break;
+	                         case "mahallesokak":
+	                        	   layers.mahallesokak  = layer;
+	                        	   break;
 	                               
 	                    }
 	              });
@@ -335,9 +327,18 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			    fieldLabel: as_labelField,
 			    store: ao_store,
 			    valueField: 'kod',
-			    displayField: 'ad'
+			    displayField: 'ad',
+			    sorters: {
+                    property: 'ad',
+                    direction: 'DESC'
+                }
 		  });
 		  cbxCombobox.setValue("-");
+		  cbxCombobox.store.sort('ad', 'DESC');
+//		  cbxCombobox.store.sort({
+//            property: 'ad',
+//            direction: 'DESC'
+//			  });
 		  return cbxCombobox;
     },
 	getFCollectionMaxExtent: function(ao_featureColl)
@@ -373,7 +374,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     											 //+ "&SRS=" + this.target.mapPanel.map.projection
     											 +"&srsName=" + this.target.mapPanel.map.projection //coordinates system for transformation
     											 + "&outputFormat=json"
-    											 + "&propertyName=SHAPE"
+    											 //+ "&propertyName=SHAPE"
     											 + "&TYPENAME=" + layerTemp.params.LAYERS 
     											 + "&" + as_cqlFilter;
     											 //+ "&CQL_FILTER=" + as_cqlFilter;
@@ -395,10 +396,38 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			this.target.mapPanel.map.zoomToExtent(this.getFCollectionMaxExtent(this.featureLayer.features),true);//lo_feature.geometry.getBounds(), true);
 			
     },
-    queryLayer: function(ao_layer,as_Filter,isCqlFilter)
+    queryWFSLayerComboBox: function(ao_layer,as_cqlFilter)
+    {
+    	
+      	var layerTemp = ao_layer.data.layer;
+    	var ls_wfsURL = layerTemp.url.replace(/wms/gi,"wfs") + "&VERSION=" + layerTemp.params.VERSION
+    											 + "&REQUEST=" + "GetFeature"
+    											 //+ "&SRS=" + this.target.mapPanel.map.projection
+    											 +"&srsName=" + this.target.mapPanel.map.projection //coordinates system for transformation
+    											 + "&outputFormat=json"
+    											 //+ "&propertyName=SHAPE"
+    											 + "&TYPENAME=" + layerTemp.params.LAYERS 
+    											 + "&" + as_cqlFilter;
+    											
+    											 //+ "&CQL_FILTER=" + as_cqlFilter;
+    	
+    	Ext.getBody().mask("Lütfen bekleyiniz.", 'loading');
+		var lo_request = OpenLayers.Request.GET({
+		    url: ls_wfsURL,
+		    timeout:5000,
+		    async: false
+		});
+		Ext.getBody().unmask();
+	
+		var jsonFormatter =  new OpenLayers.Format.GeoJSON();
+		
+		return jsonFormatter.read(lo_request.responseText);
+					
+    },
+    queryLayer: function(ao_layer,as_Filter,propertyName,isCqlFilter)
     {
     	if(isCqlFilter)
-    		this.queryWFSLayer(ao_layer,"&CQL_FILTER=" + as_Filter);
+    		this.queryWFSLayer(ao_layer,propertyName+"&CQL_FILTER=" + as_Filter);
     	else
     		this.queryWFSLayer(ao_layer,as_Filter);
 			
@@ -424,7 +453,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	    cbx.bindStore(tempDataSet);
 	   return tempDataSet;
    },
-    getAddress_result:function(event)
+    getAddress_result:function(resultValue)
     {
     	Ext.getBody().unmask();
 	    var addressDataSet = new Ext.data.ArrayStore({
@@ -432,73 +461,85 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	        fields: ['ad','kod']
 		 });
 	    
-		 var xmlFormatter =  new OpenLayers.Format.XML();
-		 var getIlce = xmlFormatter.read(event.responseText);
-		 var childrens = getIlce.getElementsByTagName("Bilgi");
-		 addressDataSet.add(new Ext.data.Record({"ad":"İlçe","kod":"-"}));
+		 addressDataSet.add(new Ext.data.Record({"ad":"Mahalle","kod":"-"}));
 		 
-		 if(this.enumAdresDeger==this.EnumAdres.KOY) //xml itemlar ters yazilmis bu nedenle bu kontrol gerekti
-	     {
-			 Ext.each(childrens, function(bilgi){
-				 addressDataSet.add(new Ext.data.Record({'kod':bilgi.lastElementChild.textContent,'ad':bilgi.firstElementChild.textContent}));
-			 });
-	     }
-		 else
-		 {
 			 
-			 Ext.each(childrens, function(bilgi){
-				 addressDataSet.add(new Ext.data.Record({'ad':bilgi.lastElementChild.textContent,'kod':bilgi.firstElementChild.textContent}));
-			 }); 
-		 }
+		 
 			 
-	    
+	   
 		switch (this.enumAdresDeger)
 		{
 			case this.EnumAdres.ILCE:
-				addressDataSet.data.items[0].data.ad = "İlçe Seçiniz";
-				this.cbx_ilce.bindStore(addressDataSet);
-				break;
-			case this.EnumAdres.MAHALLE:
+				
+				 Ext.each(resultValue, function(bilgi){
+					 addressDataSet.add(new Ext.data.Record({'ad':bilgi.attributes["ILCEADI"],'kod':bilgi}));
+				 }); 
+				
 				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
+					addressDataSet.data.items[0].data.ad = " İlçe Seçiniz";
+				
+				
+				
+				this.cbx_ilce.bindStore(addressDataSet);
+				this.cbx_ilce.setValue("-");
+				this.clearCbx(this.cbx_mahalle, " Mahalle Seçiniz");
+				this.clearCbx(this.cbx_sokak, " Sokak Seçiniz");
+				this.clearCbx(this.cbx_kapi, " Kapı Seçiniz");
+				this.cbx_mahalle.setValue("-");
+				this.cbx_sokak.setValue("-");
+				this.cbx_kapi.setValue("-");
+				
+				break;	
+			case this.EnumAdres.MAHALLE:
+				
+				 Ext.each(resultValue, function(bilgi){
+					 addressDataSet.add(new Ext.data.Record({'ad':bilgi.attributes["MAH_ADI"],'kod':bilgi}));
+				 }); 
+				
+				if(addressDataSet.data.items.length>0)
+					addressDataSet.data.items[0].data.ad = " Mahalle Seçiniz";
 				this.cbx_mahalle.bindStore(addressDataSet);
 				this.cbx_mahalle.setValue("-");
-				this.clearCbx(this.cbx_sokak, "Sokak Seçiniz");
-				this.clearCbx(this.cbx_kapi, "Kapı Seçiniz");
+				
+				this.clearCbx(this.cbx_sokak, " Sokak Seçiniz");
+				this.clearCbx(this.cbx_kapi, " Kapı Seçiniz");
 				this.cbx_sokak.setValue("-");
 				this.cbx_kapi.setValue("-");
 				break;
 			case this.EnumAdres.SOKAK:
+				var sokakTekrarKontrol;
+				 Ext.each(resultValue, function(bilgi){
+					 if(bilgi.attributes["YOL_ISMI"]=="ALPARSLAN")
+						 bilgi.attributes["YOL_ISMI"];
+					 if(sokakTekrarKontrol!=bilgi.attributes["YOL_ISMI"])
+					 {
+						addressDataSet.add(new Ext.data.Record({'ad':bilgi.attributes["YOL_ISMI"],'kod':bilgi}));
+					 	sokakTekrarKontrol = bilgi.attributes["YOL_ISMI"];
+					 	
+					 }
+				 }); 
+				
 				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
-				addressDataSet.data.items[0].data.ad = "Sokak Seçiniz";
+					addressDataSet.data.items[0].data.ad = " Mahalle Seçiniz";
+				addressDataSet.data.items[0].data.ad = " Sokak Seçiniz";
 				this.cbx_sokak.bindStore(addressDataSet);
-				this.clearCbx(this.cbx_kapi, "Kapı Seçiniz");
+//				this.cbx_sokak.store.sort('ad', 'ASC');
+				this.clearCbx(this.cbx_kapi, " Kapı Seçiniz");
 				this.cbx_kapi.setValue("-");
 				break;
 			case this.EnumAdres.KAPI:
+				 Ext.each(resultValue, function(bilgi){
+					 addressDataSet.add(new Ext.data.Record({'ad':bilgi.attributes["KAPINO"],'kod':bilgi.attributes["MAKS_KIMLIK_NO"]}));
+				 }); 
 				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
-				addressDataSet.data.items[0].data.ad = "Kapı Seçiniz";
+					addressDataSet.data.items[0].data.ad = " Mahalle Seçiniz";
+				addressDataSet.data.items[0].data.ad = " Kapı Seçiniz";
 				this.cbx_kapi.bindStore(addressDataSet);
+//				this.cbx_kapi.store.sort('ad', 'ASC');
 				break; 
-			case this.EnumAdres.KOY:
-				if(addressDataSet.data.items.length>0)
-					addressDataSet.data.items[0].data.ad = "Mahalle Seçiniz";
-				addressDataSet.data.items[0].data.ad = "Koy Seçiniz";
-				this.cbx_koy.bindStore(addressDataSet);
-				this.cbx_koy.setValue("-");
-				this.cbx_mahalle.setValue("-");
-				this.clearCbx(this.cbx_sokak, "Sokak Seçiniz");
-				this.clearCbx(this.cbx_kapi, "Kapı Seçiniz");
-				this.cbx_sokak.setValue("-");
-				this.cbx_kapi.setValue("-");
-				break; 
-		}
-
-
-	     
-			 
+ 		}
+		addressDataSet.sort('ad', 'ASC');
+ 			 
 
     	
     },

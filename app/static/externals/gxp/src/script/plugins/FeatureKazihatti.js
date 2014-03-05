@@ -153,7 +153,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		    	"srs" : "EPSG:900915",
 		    	"outputFormat" : "json",
 		    	"typename" : "UniversalWorkspace:SDE.KARAYOLU",
-		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CI,SHAPE",
+		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CINSI,SHAPE",
 		    	"cql_filter" : "DWITHIN(SHAPE,"+transGeom.components[0].toString()+",2,meters)"
 		    },
 		    async: false
@@ -162,7 +162,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		{
 			if (mahSokStore.find("YOL_ISMI",sokak.attributes["YOL_ISMI"])==-1)
 			{
-				mahSokStore.add(new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CI"]}));
+				mahSokStore.add(new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]}));
 				request = OpenLayers.Request.GET({
 					    url:    wfsURL,
 					    params: {
@@ -172,19 +172,20 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
     				    	"srs" : "EPSG:900915",
     				    	"outputFormat" : "json",
     				    	"typename" : "UniversalWorkspace:SDE.KOYMAHALLE",
-    				    	"propertyName" : "ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID",
-    				    	"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")"
+    				    	"propertyName" : "ILCE_ADI,ILCE_ID,MAH_ADI,MAH_ID",
+    				    	"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.simplify().toString()+")"
+    				    	//"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")"
     				    },
 					    async: false
 				});
 				Ext.each(jsonFormatter.read(request.responseText),function(mah)
 				{
 					var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",sokak.attributes["YOL_ID"]));
-					item.data["MAH_ID"] = mah.attributes["MAHALLEID"];
-					item.data["MAH_ADI"] = mah.attributes["KOYMAHALLEADI"];
-					item.data["ILCE_ID"] = mah.attributes["ILCEID"];
-					item.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
-					item.data["MAH_SOK"] = mah.attributes["KOYMAHALLEADI"]+" : "+item.data["YOL_ISMI"];
+					item.data["MAH_ID"] = mah.attributes["MAH_ID"];
+					item.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
+					item.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
+					item.data["ILCE_ADI"] = mah.attributes["ILCE_ADI"];
+					item.data["MAH_SOK"] = mah.attributes["MAH_ADI"]+" : "+item.data["YOL_ISMI"];
 				});
 			}    							
 		},this);
@@ -576,10 +577,10 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            handler: function(){ 
 	            	try
 	            	{
-		            	if(window.parent.hasGrid("gisTable")) //mis function (tablo acikmi kontrolu)
+		            	//if(window.parent.hasGrid("gisTable")) //mis function (tablo acikmi kontrolu)
 		            		this.saveStrategy.save();
-		            	else
-		            		alert("Gis Adress Tablosu bulunamadı");
+		            	//else
+		            	//	alert("Gis Adress Tablosu bulunamadı");
 	            	}
 	            	catch (err) {
 	            		alert("Gis Adress Tablosu bulunamadı");

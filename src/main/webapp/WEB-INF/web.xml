@@ -30,7 +30,7 @@
         </init-param>
         <init-param>
         	<param-name>geoserver_url</param-name>
-        	<param-value>http://10.0.0.153:8080/geoserver/</param-value>
+        	<param-value>http://geoserver.kocaeli.bel.tr:8090/geoserver/</param-value>
     	</init-param>
         <init-param>
         	<param-name>GEOEXPLORER_DATA</param-name>
