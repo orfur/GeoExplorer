@@ -49,7 +49,8 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
             		  id: 0,
             		  fields: ['NVI_CSBMKOD','BINA_KODU','BINA_ADI','KAPI_NO','YOL_ID','YOL_ISMI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI']
             	  });
-              	
+            	  
+            	  var lonlatWGS84=this.map.getLonLatFromViewPortPx(e.xy);lonlatWGS84=lonlatWGS84.transform(new OpenLayers.Projection(this.map.projection),new OpenLayers.Projection("EPSG:4326"));
                   var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
               	  var transGeom  = lonlat.transform(new OpenLayers.Projection(this.map.projection),new OpenLayers.Projection("EPSG:900915"));
               	  //alert(transGeom.lon + " " + transGeom.lat);
@@ -78,7 +79,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		              	  {
 		              		  	adresStore.data["NVI_CSBMKOD"] =  kapi.attributes["NVICSBMKOD"];
 		              		  	adresStore.data["KAPI_NO"] 	   =  kapi.attributes["KAPINO"];
-								adresStore.data["BINA_KODU"]   =  kapi.attributes["NVIBINAKOD"];
+								adresStore.data["BINA_KODU"]   =  "";//kapi.attributes["NVIBINAKOD"];//bina adi yok veride
 								response = this.scope.queryOnLayer(this.scope.dataLayers.bina,"ADI,KBB_BINAID","KBB_BINAID="+ kapi.attributes["KBB_BINAID"]);
 								Ext.each(response, function(bina)
 		                      	{
@@ -92,7 +93,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 		              		  	  response = this.scope.queryOnLayer(this.scope.dataLayers.sokak,"YOL_ID,YOL_ISMI,CSBMK1,SHAPE","CSBMK1="+ kapi.attributes["NVICSBMKOD"] + " or " + "CSBMK2="+ kapi.attributes["NVICSBMKOD"]);
 		                      	  Ext.each(response, function(sokak)
 		                      	  {
-		                      		  	adresStore.data["YOL_ID"] 	=  sokak.attributes["YOL_ID"];
+		                      		  	adresStore.data["YOL_ID"] 	=  sokak.attributes["CSBMK1"];
 		                      		  	adresStore.data["YOL_ISMI"] =  sokak.attributes["YOL_ISMI"];
 		                      		  	//alert("YOL_ISMI:" +sokak.attributes["YOL_ISMI"]);
 		                      		 
@@ -123,7 +124,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
           		  	  {
 		                  	  Ext.each(response, function(sokak)
 		                  	  {
-		                  		  	adresStore.data["YOL_ID"] 	=  sokak.attributes["YOL_ID"];
+		                  		  	adresStore.data["YOL_ID"] 	=  sokak.attributes["CSBMK1"];
 		                  		  	adresStore.data["YOL_ISMI"] =  sokak.attributes["YOL_ISMI"];
 		                  		  	//alert("YOL_ISMI:" + sokak.attributes["YOL_ISMI"]);
 		                  		  	
@@ -163,7 +164,11 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
               	  
 		              	try //vaadin service erisim icin kullanilan fonksiyon 
 						{
-								//Ext.MessageBox.minWidth = 300; 
+		              		var mapExtent=this.map.getExtent();
+		              		var mapImageUrl="";
+		              		mapImageUrl+=this.scope.dataLayers.mahalle.store.url.replace(/ows/gi,"wms")+"?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS="+this.map.projection;mapImageUrl+="&BBOX="+mapExtent.toString();mapImageUrl+="&FORMAT=image/png&EXCEPTIONS=application/vnd.ogc.se_inimage&LAYERS=UniversalWorkspace:SDE.KOYMAHALLE,UniversalWorkspace:SDE.KARAYOLU,UniversalWorkspace:SDE.KOCAELI_KAPI,UniversalWorkspace:SDE.KOCAELI_YAPI";
+		              		mapImageUrl+="&WIDTH="+this.map.size.w+"&HEIGHT="+this.map.size.h+"&TILED=true&TRANSPARENT=TRUE";mapImageUrl=mapImageUrl.replace(/:/gi,"<>");
+
 		              		Ext.MessageBox.buttonText = {
 		              	            ok     : "Tamam",
 		              	            cancel : "İptal",
@@ -187,7 +192,11 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
 																adresStore.data["ILCE_ID"]	+':'+
 																adresStore.data["ILCE_ADI"] +':'+
 																adresStore.data["BINA_ADI"]	+':'+
-																adresStore.data["BINA_KODU"]);
+																adresStore.data["BINA_KODU"]+':'+
+																lonlatWGS84.lon+':'+
+																lonlatWGS84.lat+':'+
+																mapExtent+':'+
+																mapImageUrl);
 								});
 						}						    			
 						catch(err)

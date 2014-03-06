@@ -30,7 +30,7 @@
         </init-param>
         <init-param>
         	<param-name>geoserver_url</param-name>
-        	<param-value>http://geoserver.kocaeli.bel.tr:8090/geoserver/</param-value>
+        	<param-value>http://geoserver.kocaeli.bel.tr:8890/geoserver/</param-value>
     	</init-param>
         <init-param>
         	<param-name>GEOEXPLORER_DATA</param-name>
@@ -42,7 +42,7 @@
     	</init-param>
     	<init-param>
         	<param-name>geoserver_password</param-name>
-        	<param-value>geoserver</param-value>
+        	<param-value>geoserver*2014</param-value>
     	</init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

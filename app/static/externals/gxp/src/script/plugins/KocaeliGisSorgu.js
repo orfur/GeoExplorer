@@ -193,7 +193,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	                this.cbx_mahalle.on('select', function(box, record, index) {
 			                	if(index>0){
 			                		this.enumAdresDeger=this.EnumAdres.SOKAK;
-			    	                var featuresSokaklar = this.queryWFSLayerComboBox(this.layers.sokak,"propertyName=CSBMK1,CSBMK2,YOL_ISMI,YOL_ID,MAKS_KIMLIK_NO"+"&CQL_FILTER=MAH1_ID="+this.cbx_mahalle.getValue().attributes["MAH_ID"] + "%20or%20MAH2_ID="+this.cbx_mahalle.getValue().attributes["MAH_ID"] );
+			    	                var featuresSokaklar = this.queryWFSLayerComboBox(this.layers.mahallesokak,"propertyName=YOL_ISMI,MAKS_KIMLIK_NO"+"&CQL_FILTER=MAH1_ID="+this.cbx_mahalle.getValue().attributes["MAH_ID"] + "%20or%20MAH2_ID="+this.cbx_mahalle.getValue().attributes["MAH_ID"] );
 			    	                this.getAddress_result(featuresSokaklar);
 									this.queryLayer(this.layers.mahalle,"MAH_ID=" + this.cbx_mahalle.getValue().attributes["MAH_ID"],"&propertyName=SHAPE",true);
 			                	}},this);
@@ -203,7 +203,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 			                		this.enumAdresDeger=this.EnumAdres.KAPI;
 			    	                var featuresSokaklar = this.queryWFSLayerComboBox(this.layers.kapi,"propertyName=MAKS_KIMLIK_NO,KAPINO"+"&CQL_FILTER=MAKS_CSBM_KN=" + this.cbx_sokak.getValue().attributes["MAKS_KIMLIK_NO"]);
 			    	                this.getAddress_result(featuresSokaklar);
-			                		this.queryLayer(this.layers.sokak , "YOL_ID=" + this.cbx_sokak.getValue().attributes["YOL_ID"],"&propertyName=SHAPE",true);
+			                		this.queryLayer(this.layers.sokak , "MAKS_KIMLIK_NO=" + this.cbx_sokak.getValue().attributes["MAKS_KIMLIK_NO"],"&propertyName=SHAPE",true);
 			                	}},this);
 	                this.cbx_kapi.on('select', function(box, record, index) {
 			                	if(index>0){
