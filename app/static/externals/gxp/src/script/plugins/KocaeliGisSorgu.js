@@ -547,6 +547,22 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     {
     	Ext.getBody().unmask();
     	alert("Hata oluştu.");
+    },
+	getUyduTileLayerServiceUrl:function(bounds) {
+        var res = this.map.getResolution();
+        var x = Math.round((bounds.left - this.map.getExtent().left) / (res * 256));
+        var y = Math.round((this.map.getExtent().top - bounds.top) / (res * 256));
+        var z = this.map.getZoom();
+
+        var xValue = "00000000" + y.toString(16);
+        var xValue = xValue.substring(xValue.length - 8, xValue.length);
+        var yValue = "00000000" + x.toString(16);
+        yValue = yValue.substring(yValue.length - 8, yValue.length);
+
+        var tilePath = "L0" + z + "/R" + yValue + "/C" + xValue;
+        var requestURL = "http://tileservices.kocaeli.bel.tr/uydu/2013/" + tilePath;
+        console.log(requestURL);
+        return requestURL;
     }
     
     
