@@ -303,7 +303,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             needsAuthorization: true,
             disabled: !this.isAuthorized(),
             handler: function() {
-                //this.save(this.showUrl);
+                this.save(this.showUrl);
             	this.save(function(){Ext.Msg.alert('Kurum Kaydedildi', '#'+this.id+' Kurum Kaydedildi!')},this,"PUT");
             },
             scope: this,

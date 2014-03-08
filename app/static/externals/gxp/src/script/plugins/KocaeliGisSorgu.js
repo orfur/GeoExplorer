@@ -100,8 +100,9 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
         				
            				var li_zoomLevel = this.target.mapPanel.map.getZoom();
         				
-	       				 if(  li_zoomLevel < 7 )//&& this.target.mapPanel.map.baseLayer.CLASS_NAME == "OpenLayers.Layer.WMS" )
-	       					 this.target.mapPanel.map.zoomTo(7);
+           				//google için kontrol konulmuştu kaldırıldı.Extent dışına çıkması engellenmişti
+	       				// if(  li_zoomLevel < 1 )//&& this.target.mapPanel.map.baseLayer.CLASS_NAME == "OpenLayers.Layer.WMS" )
+	       				//	 this.target.mapPanel.map.zoomTo(1);
         				
         				var lo_Extent = this.target.mapPanel.map.getExtent().clone().transform(new OpenLayers.Projection(this.target.mapPanel.map.projection),new OpenLayers.Projection("EPSG:900915"));
         				if(this.target.mapintializedcomplete)
@@ -548,22 +549,90 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
     	Ext.getBody().unmask();
     	alert("Hata oluştu.");
     },
-	getUyduTileLayerServiceUrl:function(bounds) {
-        var res = this.map.getResolution();
-        var x = Math.round((bounds.left - this.map.getExtent().left) / (res * 256));
-        var y = Math.round((this.map.getExtent().top - bounds.top) / (res * 256));
-        var z = this.map.getZoom();
-
-        var xValue = "00000000" + y.toString(16);
-        var xValue = xValue.substring(xValue.length - 8, xValue.length);
-        var yValue = "00000000" + x.toString(16);
-        yValue = yValue.substring(yValue.length - 8, yValue.length);
-
-        var tilePath = "L0" + z + "/R" + yValue + "/C" + xValue;
-        var requestURL = "http://tileservices.kocaeli.bel.tr/uydu/2013/" + tilePath;
-        console.log(requestURL);
-        return requestURL;
+    getUyduTileLayerServiceUrl:function(bounds) {
+    	var tileOrigin = new OpenLayers.LonLat(-5123200, 10002100);
+	    var res = this.map.getResolution();
+	    var centerLonLat = bounds.getCenterLonLat();
+	    var column = Math.floor((centerLonLat.lon - tileOrigin.lon) / (res * 256));
+	    var row = Math.floor((tileOrigin.lat - centerLonLat.lat) / (res * 256));
+	    var z = this.map.getZoom();
+	
+	    var columnValue = "00000000" + column.toString(16);
+	    columnValue = columnValue.substring(columnValue.length - 8, columnValue.length);
+	    var rowValue = "00000000" + row.toString(16);
+	    rowValue = rowValue.substring(rowValue.length - 8, rowValue.length);
+	
+	    var tilePath = "L0" + z + "/R" + rowValue + "/C" + columnValue;
+	    var requestURL = this.url + tilePath;
+	    console.log(requestURL);
+	    return requestURL;
     }
+//	getUyduTileLayerServiceUrl:function(bounds) {
+//		var mapProjCode = this.map.projection;
+//		var transbounds  = bounds.clone();//.transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("PROJCS[\"TMSUDAN\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",30.0],PARAMETER[\"scale_factor\",1.0],PARAMETER[\"latitude_of_origin\",0.0],UNIT[\"Meter\",1.0]]"));
+//		var transExtent  = this.map.getMaxExtent().clone();//.transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("PROJCS[\"TMSUDAN\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.0],PARAMETER[\"false_northing\",0.0],PARAMETER[\"central_meridian\",30.0],PARAMETER[\"scale_factor\",1.0],PARAMETER[\"latitude_of_origin\",0.0],UNIT[\"Meter\",1.0]]"));
+//        var res = this.map.getResolution();
+//        //111.9999841264659, 56.00014022076714, 28.00007011038352, 14.00003505519176, 7.000165688657728, 4.200040148351785, 1.400210957351069, 0.7001054786755356, 0.2802795153612903, 0.1401397576806451
+//        var z = this.map.getZoom();
+////		switch (this.map.getZoom())
+////		{
+////			case 20:
+////				res=0.1401397576806451;
+////				z = 10;
+////				break;
+////			case 19:
+////				res=0.2802795153612903;
+////				z=9;
+////				break;
+////			case 18:
+////				res=0.7001054786755356;
+////				z=8;
+////				break;
+////			case 17:
+////				res=1.400210957351069;
+////				z=7;
+////				break;
+////			case 16:
+////				res=4.200040148351785;
+////				z=6;
+////				break;
+////			case 15:
+////				res=111.9999841264659;
+////				z=5;
+////			case 14:
+////				res=7.000165688657728;
+////				z=4;
+////			case 13:
+////				res=14.00003505519176;
+////				z=3;
+////			case 12:
+////				res=28.00007011038352;
+////				z=2;
+////			case 11:
+////				res=56.00014022076714;
+////				z=1;
+////				break;
+////			case 10:
+////				res=111.9999841264659;
+////				z=0;
+////				break;
+////
+////		}
+//			
+//        var x = Math.round((transbounds.left - transExtent.left) / (res * 256));
+//        var y = Math.round((transExtent.top - transbounds.top) / (res * 256));
+// 
+//
+//        var xValue = "00000000" + y.toString(16);
+//        var xValue = xValue.substring(xValue.length - 8, xValue.length);
+//        var yValue = "00000000" + x.toString(16);
+//        yValue = yValue.substring(yValue.length - 8, yValue.length);
+//
+//        var tilePath = "/L0" + z + "/R" + yValue + "/C" + xValue;
+//        var requestURL = "http://tileservices.kocaeli.bel.tr/uydu/2013" + tilePath;
+//        console.log(requestURL);
+//        return requestURL;
+//    }
     
     
 		

@@ -408,20 +408,13 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		});
 		
 		
-		
-
-		
-		
-		
-		
-		
 		//this.saveStrategy.events.register('fail', null, saveFail);
 		Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
 		this.vectorLayer = new OpenLayers.Layer.Vector(this.id, {
 			strategies: [this.saveStrategy],
 	        displayInLayerSwitcher: false,
 	        visibility: true,
-	        projection : new OpenLayers.Projection("EPSG:102113"),
+	        projection : new OpenLayers.Projection(mapProjCode),
 	        protocol : new OpenLayers.Protocol.WFS({
                 version : "1.1.0",
                 url : this.wfsURL,
@@ -583,7 +576,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		            		alert("Gis Adress Tablosu bulunamadı");
 	            	}
 	            	catch (err) {
-	            		alert("Gis Adress Tablosu bulunamadı");
+	            		alert("Gis Adress Tablosu bulunamadı"); 
 	            	}
 	            },
 	            scope: this,

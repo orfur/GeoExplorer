@@ -178,14 +178,11 @@ var GeoExplorer = Ext
 							this.kurumID = kurumID;
 							if (kurumID != null) {
 								this.id = kurumID;
-								OpenLayers.Request
-										.GET({
+								OpenLayers.Request.GET({
 											url : "maps/" + kurumID,
 											success : function(request) {
-												var addConfig = Ext.util.JSON
-														.decode(request.responseText);
-												this.applyConfig(Ext.applyIf(
-														addConfig, config));
+												var addConfig = Ext.util.JSON.decode(request.responseText);
+												this.applyConfig(Ext.applyIf(addConfig, config));
 											},
 											failure : function(request) {
 												var obj;
@@ -195,23 +192,12 @@ var GeoExplorer = Ext
 												} catch (err) {
 												}
 												if (request.status == 404) {
-													this
-															.on({
-																ready : function() {
-																	this
-																			.save(
-																					function() {
-																						Ext.Msg
-																								.alert(
-																										'Kurum Kaydedildi',
-																										'#'
-																												+ this.id
-																												+ ' Kurum Kaydedildi!')
-																					},
-																					this,
-																					"POST");
+													this.on({ready : function() {
+																this.save(function() {
+																	Ext.Msg.alert('Kurum Kaydedildi','#'+ this.id+ ' Kurum Kaydedildi!')
+																},this,"POST");
 																}
-															});
+													});
 												}
 												this.applyConfig(config);
 											},

@@ -42,6 +42,7 @@
         }
         GeoExt.Lang.set("tr");
         Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
+        Proj4js.defs["EPSG:900916"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +datum=WGS84 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
             proxy: "proxy?url=",
@@ -63,12 +64,12 @@
                 	url: "http://gis.kocaeli.bel.tr/ArcGIS/services/IMAR_YAYIN/MapServer/WMSServer?style=",
                     title: "Imar Katmanları",
                     ptype: "gxp_wmscsource"
-                }
+                },
                 /*
                 mapquest: { 
                     ptype: "gxp_mapquestsource"
                 }*/
-                ,osm: {
+                /*,osm: {
                     ptype: "gxp_osmsource"
                 },
                 google: {
@@ -77,7 +78,7 @@
                 bing: {
                     ptype: "gxp_bingsource"
                 },
-                /*mapbox: {
+                mapbox: {
                     ptype: "gxp_mapboxsource"
                 },
                 */
@@ -87,17 +88,19 @@
                 }
             },
             map: {
-                projection: "EPSG:102113",
-                //projection: "EPSG:900913",//"EPSG:900913",
+            	projection: "EPSG:900916",
+                scales: [400000, 200000, 100000, 50000, 25000, 15000, 5000, 2500, 1000, 500],
+                resolutions: [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529],
+                minScale: 400000,
+                maxResolution: "auto",
+                maxExtent: [379368.000000856, 4436618.000114, 598577.99999933, 4588478.00011583],
+                maxResolution: 105.833545000423,
+                maxScale: 500,
+                minResolution: "auto",
+                minExtent: [-1, -1, 1, 1],
+                minResolution: 0.132291931250529,
+                numZoomLevels: 10,
                 units: "m",
-                numZoomLevels:21,
-                maxResolution: 156543.0339,
-                maxExtent: [
-					3264889.3454759,
-					4942236.8339595,
-					3380661.6159009,
-					5043366.1352815
-                ],
                 layers: [
                 /*{
                 	source: "google",
@@ -119,12 +122,18 @@
                 },
                 {
                 	source: "ol",
-                    type: "OpenLayers.Layer.WMS",
+                    type: "OpenLayers.Layer.TMS",
                     group: "background",
                     args: [
                            "Kocaeli Raster",
-                           "http://gis.kocaeli.bel.tr/ArcGIS/services/UYDU_2011/MapServer/WMSServer?style=",
-                           {layers: "0,1,2,3,4,5,6", format: "image/png",isBaseLayer:true}
+                           "http://tileservices.kocaeli.bel.tr/uydu/2012/",
+                           {
+                        	   'type': 'png',
+                        	   'getURL': gxp.plugins.KocaeliGisSorgu.prototype.getUyduTileLayerServiceUrl,
+                        	   'isBaseLayer': true,
+                        	   'tileOrigin': new OpenLayers.LonLat(-5123200, 10002100),
+                        	   'serverResolutions': [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529]
+							}
                        ]
   
                 },
@@ -282,8 +291,8 @@
                 	cached:true
                 }
                 ],
-                center: [3326386.5964513,4981095.3845385],
-                zoom: 10
+                center: [495353.22, 4513995.49],
+                zoom: 0
             }
         });
         
