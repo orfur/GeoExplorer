@@ -564,7 +564,7 @@ gxp.plugins.KocaeliGisSorgu = Ext.extend(gxp.plugins.Tool, {
 	
 	    var tilePath = "L0" + z + "/R" + rowValue + "/C" + columnValue;
 	    var requestURL = this.url + tilePath;
-	    console.log(requestURL);
+	    //console.log(requestURL);
 	    return requestURL;
     }
 //	getUyduTileLayerServiceUrl:function(bounds) {
