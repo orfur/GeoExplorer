@@ -6,7 +6,7 @@
     </description>
 
     <property name="build" location="build"/>
-    <property name="app.proxy.geoserver" value="http://geoserver.kocaeli.bel.tr:8890/geoserver/"/>
+    <property name="app.proxy.geoserver" value="http://geoserver.kocaeli.bel.tr:8090/geoserver/"/>
     <property name="app.username" value="admin"/>
     <property name="app.password" value="geoserver*2014"/>
     <property name="app.port" value="8890"/>
