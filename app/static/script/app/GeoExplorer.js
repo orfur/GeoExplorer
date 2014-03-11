@@ -182,13 +182,26 @@ var GeoExplorer = Ext
 											url : "maps/" + kurumID,
 											success : function(request) {
 												var addConfig = Ext.util.JSON.decode(request.responseText);
-												addConfig.map.layers[1].args[2] =                            {
-							                        	   'type': 'png',
-							                        	   'getURL': gxp.plugins.KocaeliGisSorgu.prototype.getUyduTileLayerServiceUrl,
-							                        	   'isBaseLayer': true,
-							                        	   'tileOrigin': new OpenLayers.LonLat(-5123200, 10002100),
-							                        	   'serverResolutions': [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529]
-														};
+												
+						        				var layers = addConfig.map.layers;
+						        				for(var i=0;i<layers.length;i++)
+						        				{
+						        				  var ls_layerType = layers[i].type; 
+						        				  if("OpenLayers.Layer.TMS" == ls_layerType)
+						        				  {
+														addConfig.map.layers[i].args[2] =                            {
+									                        	   'type': 'png',
+									                        	   'getURL': gxp.plugins.KocaeliGisSorgu.prototype.getUyduTileLayerServiceUrl,
+									                        	   'isBaseLayer': true,
+									                        	   'tileOrigin': new OpenLayers.LonLat(-5123200, 10002100),
+									                        	   'serverResolutions': [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529]
+																};
+						        					}
+						        				
+						        				}
+
+						        			
+
 												this.applyConfig(Ext.applyIf(addConfig, config));
 											},
 											failure : function(request) {
