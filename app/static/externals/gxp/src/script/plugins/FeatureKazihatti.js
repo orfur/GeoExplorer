@@ -142,18 +142,18 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	        id: 0,
 	        fields: ['YOL_ID','YOL_ISMI','YOL_KAPLAMA_CINSI','MAH_ID','MAH_ADI','ILCE_ID','ILCE_ADI','MAH_SOK']
 		});
-    	Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
-    	var transGeom  = feature.geometry.clone().transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
+    	Proj4js.defs["EPSG:40000"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
+    	var transGeom  = feature.geometry.clone().transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:40000"));
     	request = OpenLayers.Request.GET({
 		    url:    wfsURL,
 		    params: {
 		    	"service" : "wfs",
 		    	"version" : "1.0.0",
 		    	"request" : "GetFeature",
-		    	"srs" : "EPSG:900915",
+		    	"srs" : "EPSG:40000",
 		    	"outputFormat" : "json",
 		    	"typename" : "UniversalWorkspace:SDE.KARAYOLU",
-		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CINSI,SHAPE",
+		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CI,SHAPE",
 		    	"cql_filter" : "DWITHIN(SHAPE,"+transGeom.components[0].toString()+",2,meters)"
 		    },
 		    async: false
@@ -162,39 +162,30 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		{
 			if (mahSokStore.find("YOL_ISMI",sokak.attributes["YOL_ISMI"])==-1)
 			{
-				
+				mahSokStore.add(new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CI"]}));
 				request = OpenLayers.Request.GET({
 					    url:    wfsURL,
 					    params: {
     				    	"service" : "wfs",
     				    	"version" : "1.0.0",
     				    	"request" : "GetFeature",
-    				    	"srs" : "EPSG:900915",
+    				    	"srs" : "EPSG:40000",
     				    	"outputFormat" : "json",
     				    	"typename" : "UniversalWorkspace:SDE.KOYMAHALLE",
-    				    	"propertyName" : "ILCE_ADI,ILCE_ID,MAH_ADI,MAH_ID",
-    				    	"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.simplify().toString()+")"
-    				    	//"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")"
+    				    	"propertyName" : "ILCEADI,ILCEID,KOYMAHALLEADI,MAHALLEID",
+    				    	"cql_filter" : "INTERSECTS(SHAPE,"+sokak.geometry.components[0].simplify().toString()+")"
     				    },
 					    async: false
 				});
 				Ext.each(jsonFormatter.read(request.responseText),function(mah)
 				{
-					
-					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
-					item.data["MAH_ID"] = mah.attributes["MAH_ID"];
-					item.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
-					item.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
-					item.data["ILCE_ADI"] = mah.attributes["ILCE_ADI"];
-					item.data["MAH_SOK"] = mah.attributes["MAH_ADI"]+" : "+item.data["YOL_ISMI"];
-					mahSokStore.add(item);
+					var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",sokak.attributes["YOL_ID"]));
+					item.data["MAH_ID"] = mah.attributes["MAHALLEID"];
+					item.data["MAH_ADI"] = mah.attributes["KOYMAHALLEADI"];
+					item.data["ILCE_ID"] = mah.attributes["ILCEID"];
+					item.data["ILCE_ADI"] = mah.attributes["ILCEADI"];
+					item.data["MAH_SOK"] = mah.attributes["KOYMAHALLEADI"]+" : "+item.data["YOL_ISMI"];
 				});
-				
-				if(mahSokStore.getCount() == 0 )
-				{
-					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
-					mahSokStore.add(item);
-				}
 			}    							
 		},this);
     	if (mahSokStore.getCount() > 1)
@@ -354,7 +345,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			        		gisUrl+= "|"; 
 			        		gisUrl+=feature.attributes["YOL_KAPLAMA_CINSI"];
 			        		gisUrl+= "|"; 
-			        		var transGeom  = feature.geometry.clone().transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:900915"));
+			        		var transGeom  = feature.geometry.clone().transform(new OpenLayers.Projection(mapProjCode),new OpenLayers.Projection("EPSG:40000"));
 			        		gisUrl+= Math.round( transGeom.getLength()*100)/100;
 			        		
 			        		if(i!=insertids.length-1)
@@ -416,13 +407,20 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		});
 		
 		
+		
+
+		
+		
+		
+		
+		
 		//this.saveStrategy.events.register('fail', null, saveFail);
-		Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
+		Proj4js.defs["EPSG:40000"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
 		this.vectorLayer = new OpenLayers.Layer.Vector(this.id, {
 			strategies: [this.saveStrategy],
 	        displayInLayerSwitcher: false,
 	        visibility: true,
-	        projection : new OpenLayers.Projection(mapProjCode),
+	        projection : new OpenLayers.Projection("EPSG:102113"),
 	        protocol : new OpenLayers.Protocol.WFS({
                 version : "1.1.0",
                 url : this.wfsURL,
@@ -539,7 +537,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		                                		failure: function(form, action) {
 		                                			var jsonFormatter =  new OpenLayers.Format.GeoJSON();
 			                                		var geoCollection = jsonFormatter.read(action.response.responseText)[0].geometry;
-			                                		geoCollection.transform(new OpenLayers.Projection("EPSG:900915"),new OpenLayers.Projection(mapProjCode));
+			                                		geoCollection.transform(new OpenLayers.Projection("EPSG:40000"),new OpenLayers.Projection(mapProjCode));
 			                                		this.target.mapPanel.map.zoomToExtent(geoCollection.getBounds(),true);
 			                                		winUpload.hide();
 			                                		Ext.each(geoCollection.components,function(geom){
@@ -578,13 +576,13 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            handler: function(){ 
 	            	try
 	            	{
-		            	if(window.parent.hasGrid("gisTable")=="Aykome") //mis function (tablo acikmi kontrolu)
+		            	if(window.parent.hasGrid("gisTable")) //mis function (tablo acikmi kontrolu)
 		            		this.saveStrategy.save();
 		            	else
 		            		alert("Gis Adress Tablosu bulunamadı");
 	            	}
 	            	catch (err) {
-	            		alert("Gis Adress Tablosu bulunamadı"); 
+	            		alert("Gis Adress Tablosu bulunamadı");
 	            	}
 	            },
 	            scope: this,

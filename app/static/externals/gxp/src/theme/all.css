@@ -167,6 +167,10 @@
 .x-btn .gxp-icon-flexcityadresal, .x-menu-item .gxp-icon-flexcityadresal, .x-tree-node .gxp-icon-flexcityadresal {
     background-image: url(img/silk/flexcity_adresal.png);
 }
+.x-btn .gxp-icon-flexcitycurrentlocation, .x-menu-item .gxp-icon-flexcitycurrentlocation, .x-tree-node .gxp-icon-flexcitycurrentlocation {
+    background-image: url(img/silk/flexcitycurrentlocation.png);
+}
+
 /* geri al buttonu */
 .x-btn .gxp-icon-featuregerial, .x-menu-item .gxp-icon-featuregerial, .x-tree-node .gxp-icon-featuregerial {
     background-image: url(img/silk/featuregerial.png);

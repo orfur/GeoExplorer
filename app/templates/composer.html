@@ -41,13 +41,13 @@
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
         GeoExt.Lang.set("tr");
-        Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
-        Proj4js.defs["EPSG:900916"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +datum=WGS84 +units=m +no_defs";
+        Proj4js.defs["EPSG:40001"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
+        Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=intl +datum=ITRF96 +units=m +no_defs";
         var app = new GeoExplorer.Composer({
             authStatus: <% status %>,
             proxy: "proxy?url=",
-            printService: null,//"/geoserver/pdf/",
-            wfsURL : "http://geoserver.kocaeli.bel.tr:8090/geoserver/wfs",
+            printService: "/geoserver/pdf/",
+            wfsURL : "http://cbsserver.sultanbeyli.bel.tr:8890/geoserver/wfs",//"http://10.0.0.153:8080/geoserver/wfs",
             about: {
                 title: "Umi Map Test Application",
                 "Amaç": "Universal Mekansal İşlemci ",
@@ -56,20 +56,24 @@
             defaultSourceType: "gxp_wmscsource",
             sources: {
                 local: {
-                	url: "http://geoserver.kocaeli.bel.tr:8090/geoserver/ows",
+                	url: "http://cbsserver.sultanbeyli.bel.tr:8890/geoserver/ows",//"http://10.0.0.153:8080/geoserver/ows",
                     title: "Kurum Servisleri",
                     ptype: "gxp_wmscsource"
                 },
+                /*
                 kocaeliimar: {
                 	url: "http://gis.kocaeli.bel.tr/ArcGIS/services/IMAR_YAYIN/MapServer/WMSServer?style=",
                     title: "Imar Katmanları",
                     ptype: "gxp_wmscsource"
                 },
-                /*
+                suite: {
+                    url: "http://10.0.0.153:8080/geoserver/ows",
+                    title: "UniGeoSever"
+                },
                 mapquest: { 
                     ptype: "gxp_mapquestsource"
-                }*/
-                /*,osm: {
+                },*/
+                osm: {
                     ptype: "gxp_osmsource"
                 },
                 google: {
@@ -78,7 +82,7 @@
                 bing: {
                     ptype: "gxp_bingsource"
                 },
-                mapbox: {
+                /*mapbox: {
                     ptype: "gxp_mapboxsource"
                 },
                 */
@@ -88,28 +92,30 @@
                 }
             },
             map: {
-            	projection: "EPSG:900916",
-                scales: [400000, 200000, 100000, 50000, 25000, 15000, 5000, 2500, 1000, 500],
-                resolutions: [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529],
-                minScale: 400000,
-                maxResolution: "auto",
-                maxExtent: [379368.000000856, 4436618.000114, 598577.99999933, 4588478.00011583],
-                maxResolution: 105.833545000423,
-                maxScale: 500,
-                minResolution: "auto",
-                minExtent: [-1, -1, 1, 1],
-                minResolution: 0.132291931250529,
-                numZoomLevels: 10,
+                projection: "EPSG:102113",
+                //projection: "EPSG:900913",//"EPSG:900913",
                 units: "m",
+                numZoomLevels:21,
+                maxResolution: 156543.0339, 
+                maxExtent: [
+							3247131.016191,5001141.122066,3271418.881925,5013638.576189
+                ],
                 layers: [
-                /*{
+
+                {
+                	source: "bing",
+                    title: "Bing Harita",
+                    name: "Aerial",//"AerialWithLabels",//"HYBRID",//"ROADMAP",
+                    group: "background"
+                },
+                {
                 	source: "google",
                     title: "Google Harita",
                     name: "SATELLITE",//"HYBRID",//"ROADMAP",
                     group: "background"
-                },*/
+                },/*
                 //baselayer parametresi ile KocaeliGisSorgu.js icindeki aftermapmove event'inde max zoom icin kontrol yapiliyor.
-                {
+                /*{
                 	source: "ol",
                     type: "OpenLayers.Layer.WMS",
                     group: "background",
@@ -120,60 +126,84 @@
                        ]
 
                 },
+               
                 {
                 	source: "ol",
-                    type: "OpenLayers.Layer.TMS",
+                    type: "OpenLayers.Layer.WMS",
                     group: "background",
                     args: [
                            "Kocaeli Raster",
-                           "http://tileservices.kocaeli.bel.tr/uydu/2012/",
-                           {
-                        	   'type': 'png',
-                        	   'getURL': gxp.plugins.KocaeliGisSorgu.prototype.getUyduTileLayerServiceUrl,
-                        	   'isBaseLayer': true,
-                        	   'tileOrigin': new OpenLayers.LonLat(-5123200, 10002100),
-                        	   'serverResolutions': [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529]
-							}
+                           "http://gis.kocaeli.bel.tr/ArcGIS/services/UYDU_2011/MapServer/WMSServer?style=",
+                           {layers: "0,1,2,3,4,5,6", format: "image/png",isBaseLayer:true}
                        ]
   
                 },
+                */                
                 {
                     source: "ol",
                     group: "background",
                     fixed: true,
                     type: "OpenLayers.Layer",
                     args: [
-                        "Hiçbiri", {visibility: false}
+                        "Hiçbiri", {visibility: true}
                     ]
                 },
                 {
+            	source:"local",
+//             	group: "background",
+            	name:"sbeyli:plan_1000",
+            	title:"Plan 1000",
+            	visibility:false,
+            	opacity:1,
+            	selected:false,
+            	format:"image/png",
+            	styles:"",
+            	transparent:true,
+            	cached:true
+            	},
+            	{
+            	source:"local",
+//             	group: "background",
+            	name:"sbeyli:plan_5000",
+            	title:"Plan 5000",
+            	visibility:false,
+            	opacity:1,
+            	selected:false,
+            	format:"image/png",
+            	styles:"",
+            	transparent:true,
+            	cached:true
+            	}, 
+            	{
+            	source:"local",
+//             	group: "background",
+            	name:"sbeyli:hh_2007",
+            	title:"Halihazır 2007",
+            	visibility:false,
+            	opacity:1,
+            	selected:false,
+            	format:"image/png",
+            	styles:"",
+            	transparent:true,
+            	cached:true
+            	}, 
+            	{
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KOYMAHALLE",
-                	title:"MAHALLE",
-                	visibility:true,
+//                 	group: "background",
+                	name:"sbeyli:hh_2010",
+                	title:"Halihazır 2010",
+                	visibility:false,
                 	opacity:1,
                 	selected:false,
                 	format:"image/png",
                 	styles:"",
                 	transparent:true,
                 	cached:true
-                },
+                	},
                 {
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KARAYOLU",
-                	title:"KARAYOLU",
-                	visibility:true,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.KOCAELI_YAPI",
-                	title:"BINA",
+                	name:"sbeyli:sbeyli_gisoft_ibb_ilceler_iska",
+                	title:"İLÇE",
                 	visibility:true,
                 	opacity:1,
                 	selected:false,
@@ -184,7 +214,139 @@
                 },                
                 {
                 	source:"local",
-                	name:"UniversalWorkspace:SDE.KOCAELI_KAPI",
+                	name:"sbeyli:sbeyli_gisoft_ibb_deniz_iska",
+                	title:"DENİZ",
+                	visibility:false,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },                
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_ibb_goller_iska",
+                	title:"GÖLLER",
+                	visibility:false,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },           
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_yol_iska",
+                	title:"YOL",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_mahalle_iska",
+                	title:"MAHALLE",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },                
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_yapi_iska",
+                	title:"YAPI",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_yapi_katadet",
+                	title:"YAPI KAT SAYISI",
+                	visibility:false,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_parsel_iska",
+                	title:"PARSEL",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_ruh_yapi",
+                	title:"RUHSATLI YAPI",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_ruh_parsel",
+                	title:"RUHSATLI PARSEL",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_uyg_parseller",
+                	title:"UYGULAMA PARSELLERI",
+                	visibility:false,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_tapu_belediye_iska",
+                	title:"BELEDİYE TAŞINMAZLARI",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:sbeyli_gisoft_kapi_iska",
                 	title:"KAPI",
                 	visibility:true,
                 	opacity:1,
@@ -194,6 +356,79 @@
                 	transparent:true,
                 	cached:true
                 },
+                {
+                	source:"local",
+                	name:"sbeyli:gi_abs_dini_tesisleri",
+                	title:"DİNİ TESİSLER",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:gi_abs_eczane",
+                	title:"ECZANELER",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:gi_abs_egitim_tesisleri",
+                	title:"EĞTİM TESİSLERİ",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:gi_abs_faaliyet_yer",
+                	title:"FAALİYET YER",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:gi_abs_kultur_tesisleri",
+                	title:"KÜLTÜR TESİSLERİ",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                },
+                {
+                	source:"local",
+                	name:"sbeyli:gi_abs_saglik_tesisleri",
+                	title:"SAĞLIK TESİSLERİ",
+                	visibility:true,
+                	opacity:1,
+                	selected:false,
+                	format:"image/png",
+                	styles:"",
+                	transparent:true,
+                	cached:true
+                }
+                /*,
                 {
                 	source:"local",
                 	name:"UniversalWorkspace:SDE.KAZIHATTI",
@@ -208,8 +443,8 @@
                 },
                 {
                		source:"local",
-               		name:"UniversalWorkspace:SDE.YAGMURSUYU_HAT",
-               		title:"YAGMUR SUYU HATLARI",
+               		name:"sbeyli:sbeyli_gisoft_yol_abis_iska",
+               		title:"YOL ABIS",
                		visibility:false,
                		opacity:1,
                		selected:false,
@@ -217,82 +452,10 @@
                		styles:"",
                		transparent:true,
                		cached:true ,
-                },
-                {	source:"local",
-                	name:"UniversalWorkspace:SDE.KANALIZASYON_HAT",
-                	title:"KANALIZASYON HATLARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.DIGER_HATLAR",
-                	title:"DIGER HATLAR",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                	
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.FIBER_HAT",
-                	title:"FIBER HATLAR",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.GAZ_HAT",
-                	title:"GAZ HATLARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.GAZ_KUTU",
-                	title:"GAZ KUTULARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                },
-                {
-                	source:"local",
-                	name:"UniversalWorkspace:SDE.ICMESU_HAT",
-                	title:"ICMESUYU HATLARI",
-                	visibility:false,
-                	opacity:1,
-                	selected:false,
-                	format:"image/png",
-                	styles:"",
-                	transparent:true,
-                	cached:true
-                }
+                }*/
                 ],
-                center: [495353.22, 4513995.49],
-                zoom: 0
+                center: [3259274.949058,5007389.8491275],
+                zoom: 12
             }
         });
         
