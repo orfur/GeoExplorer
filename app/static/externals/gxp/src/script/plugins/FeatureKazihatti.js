@@ -199,7 +199,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            forceSelection: true,
 	            width: 200,
 			    mode: 'local',
-			    fieldLabel: "Sokak",
+			    fieldLabel: "Sokak", 
 			    store: mahSokStore,
 			    valueField: 'YOL_ID',
 			    displayField: 'MAH_SOK'
