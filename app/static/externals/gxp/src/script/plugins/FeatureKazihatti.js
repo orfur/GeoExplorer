@@ -162,7 +162,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		{
 			if (mahSokStore.find("YOL_ISMI",sokak.attributes["YOL_ISMI"])==-1)
 			{
-				mahSokStore.add(new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]}));
+				
 				request = OpenLayers.Request.GET({
 					    url:    wfsURL,
 					    params: {
@@ -180,13 +180,21 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 				});
 				Ext.each(jsonFormatter.read(request.responseText),function(mah)
 				{
-					var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",sokak.attributes["YOL_ID"]));
+					
+					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
 					item.data["MAH_ID"] = mah.attributes["MAH_ID"];
 					item.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
 					item.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
 					item.data["ILCE_ADI"] = mah.attributes["ILCE_ADI"];
 					item.data["MAH_SOK"] = mah.attributes["MAH_ADI"]+" : "+item.data["YOL_ISMI"];
+					mahSokStore.add(item);
 				});
+				
+				if(mahSokStore.getCount() == 0 )
+				{
+					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
+					mahSokStore.add(item);
+				}
 			}    							
 		},this);
     	if (mahSokStore.getCount() > 1)
