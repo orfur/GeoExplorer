@@ -224,7 +224,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	                bodyStyle: "padding: 5px;",
 	                labelWidth: 40,
 	                items: [cbxRegion]
-                }],
+                }], 
         		buttons: [{
                     text: "Tamam",
                     formBind: true,
