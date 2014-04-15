@@ -14,7 +14,7 @@ gxp.plugins.FlexCityAdresAl = Ext.extend(gxp.plugins.Tool, {
       init: function(target) {
           this.busyMask = new Ext.LoadMask(
                   target.mapPanel.map.div, {
-                      msg: "Lütfen bekleyiniz."
+                      msg: "Lütfen bekleyiniz." 
                   }
               );
     	  gxp.plugins.FlexCityAdresAl.superclass.init.apply(this, arguments);   	  
