@@ -181,7 +181,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 				Ext.each(jsonFormatter.read(request.responseText),function(mah)
 				{
 					
-					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
+					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["CSBMK1"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
 					item.data["MAH_ID"] = mah.attributes["MAH_ID"];
 					item.data["MAH_ADI"] = mah.attributes["MAH_ADI"];
 					item.data["ILCE_ID"] = mah.attributes["ILCE_ID"];
@@ -192,7 +192,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 				
 				if(mahSokStore.getCount() == 0 )
 				{
-					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["YOL_ID"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
+					var item = new Ext.data.Record({'YOL_ID': sokak.attributes["CSBMK1"], 'YOL_ISMI':sokak.attributes["YOL_ISMI"], 'YOL_KAPLAMA_CINSI': sokak.attributes["KAPLAMA_CINSI"]})
 					mahSokStore.add(item);
 				}
 			}    							
