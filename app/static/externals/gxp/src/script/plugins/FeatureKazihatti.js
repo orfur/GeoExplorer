@@ -153,7 +153,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 		    	"srs" : "EPSG:900915",
 		    	"outputFormat" : "json",
 		    	"typename" : "UniversalWorkspace:SDE.KARAYOLU",
-		    	"propertyName" : "YOL_ID,YOL_ISMI,KAPLAMA_CINSI,SHAPE",
+		    	"propertyName" : "CSBMK1,YOL_ISMI,KAPLAMA_CINSI,SHAPE",
 		    	"cql_filter" : "DWITHIN(SHAPE,"+transGeom.components[0].toString()+",2,meters)"
 		    },
 		    async: false
