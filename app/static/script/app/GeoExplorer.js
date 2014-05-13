@@ -142,16 +142,13 @@ var GeoExplorer = Ext
 							OpenLayers.Request.GET({
 								url : mapUrl,
 								success : function(request) {
-									var addConfig = Ext.util.JSON
-											.decode(request.responseText);
-									this.applyConfig(Ext.applyIf(addConfig,
-											config));
+									var addConfig = Ext.util.JSON.decode(request.responseText);
+									this.applyConfig(Ext.applyIf(addConfig,config));
 								},
 								failure : function(request) {
 									var obj;
 									try {
-										obj = Ext.util.JSON
-												.decode(request.responseText);
+										obj = Ext.util.JSON.decode(request.responseText);
 									} catch (err) {
 									}
 									var msg = this.loadConfigErrorText;
@@ -162,8 +159,7 @@ var GeoExplorer = Ext
 									}
 									this.on({
 										ready : function() {
-											this.displayXHRTrouble(msg,
-													request.status);
+											this.displayXHRTrouble(msg,request.status);
 										},
 										scope : this
 									});
@@ -207,8 +203,7 @@ var GeoExplorer = Ext
 											failure : function(request) {
 												var obj;
 												try {
-													obj = Ext.util.JSON
-															.decode(request.responseText);
+													obj = Ext.util.JSON.decode(request.responseText);
 												} catch (err) {
 												}
 												if (request.status == 404) {
@@ -224,12 +219,9 @@ var GeoExplorer = Ext
 											scope : this
 										});
 							} else {
-								var query = Ext
-										.urlDecode(document.location.search
-												.substr(1));
+								var query = Ext.urlDecode(document.location.search.substr(1));
 								if (query && query.q) {
-									var queryConfig = Ext.util.JSON
-											.decode(query.q);
+									var queryConfig = Ext.util.JSON.decode(query.q);
 									Ext.apply(config, queryConfig);
 								}
 								this.applyConfig(config);
@@ -252,8 +244,7 @@ var GeoExplorer = Ext
 					getKurumID : function() {
 						var defaultMap = 1000;
 						try {
-							var userJobTitle = window.parent
-									.getUserFromLiferay();
+							var userJobTitle = window.parent.getUserFromLiferay();
 							if (userJobTitle.length > 0) {
 								defaultMap = userJobTitle;
 							}
@@ -262,8 +253,7 @@ var GeoExplorer = Ext
 						return defaultMap;
 					},
 					getLocationMarkers : function() {
-						var markerLocations = window.parent
-								.getMarkerLocations();
+						var markerLocations = window.parent.getMarkerLocations();
 						var serverMapExtent = window.parent.getMapExtent();
 						uniMarkerVectorLayer = new OpenLayers.Layer.Vector(
 								"Yerlerim",
@@ -288,32 +278,22 @@ var GeoExplorer = Ext
 											})
 								});
 						if (markerLocations != null) {
-							var lo_tempMarkerArray = markerLocations
-									.split("||");
+							var lo_tempMarkerArray = markerLocations.split("||");
 							for ( var i = 0; i < lo_tempMarkerArray.length; i++) {
 								var lo_tempMarker = lo_tempMarkerArray[i];
-								var lo_tempCoordinateArray = lo_tempMarker
-										.split(":");
-								var point = new OpenLayers.Geometry.Point(
-										lo_tempCoordinateArray[0],
-										lo_tempCoordinateArray[1]);
-								point.transform(new OpenLayers.Projection(
-										"EPSG:4326"), this.map.projection);
-								var pointFeature = new OpenLayers.Feature.Vector(
-										point);
+								var lo_tempCoordinateArray = lo_tempMarker.split(":");
+								var point = new OpenLayers.Geometry.Point(lo_tempCoordinateArray[0],lo_tempCoordinateArray[1]);
+								point.transform(new OpenLayers.Projection("EPSG:4326"), this.map.projection);
+								var pointFeature = new OpenLayers.Feature.Vector(point);
 								pointFeature.attributes.order = "";
-								if (lo_tempCoordinateArray.length > 2
-										&& lo_tempCoordinateArray[3] != undefined)
+								if (lo_tempCoordinateArray.length > 2 && lo_tempCoordinateArray[3] != undefined)
 									pointFeature.attributes.order = lo_tempCoordinateArray[3];
-								uniMarkerVectorLayer
-										.addFeatures([ pointFeature ]);
+								uniMarkerVectorLayer.addFeatures([ pointFeature ]);
 							}
 							this.mapPanel.map.addLayer(uniMarkerVectorLayer);
 						}
 						if (serverMapExtent != null & serverMapExtent != "") {
-							var lo_extent = new OpenLayers.Bounds.fromString(
-									serverMapExtent,
-									this.mapPanel.map.projection);
+							var lo_extent = new OpenLayers.Bounds.fromString(serverMapExtent,this.mapPanel.map.projection);
 							this.mapPanel.map.zoomToExtent(lo_extent, true);
 						}
 					},
@@ -348,29 +328,20 @@ var GeoExplorer = Ext
 							id : 'paneltbar',
 							items : this.createTools()
 						});
-						this
-								.on(
-										"ready",
+						this.on(		"ready",
 										function() {
-											var disabled = this.toolbar.items
-													.filterBy(function(item) {
-														return item.initialConfig
-																&& item.initialConfig.disabled;
+											var disabled = this.toolbar.items.filterBy(function(item) {
+														return item.initialConfig && item.initialConfig.disabled;
 													});
 											this.toolbar.enable();
 											disabled.each(function(item) {
 												item.disable();
 											});
 											westPanel.collapse();
-											var mapExtent = this
-													.getCookieValue("extent");
-											if (mapExtent != null
-													& mapExtent != "") {
-												var lo_extent = new OpenLayers.Bounds.fromString(
-														mapExtent,
-														this.mapPanel.map.projection);
-												this.mapPanel.map.zoomToExtent(
-														lo_extent, true);
+											var mapExtent = this.getCookieValue("extent");
+											if (mapExtent != null & mapExtent != "") {
+												var lo_extent = new OpenLayers.Bounds.fromString(mapExtent,this.mapPanel.map.projection);
+												this.mapPanel.map.zoomToExtent(lo_extent, true);
 											}
 											this.mapintializedcomplete = true;
 										});
@@ -410,16 +381,12 @@ var GeoExplorer = Ext
 								layersToolbar.disable();
 							}
 						}, this);
-						googleEarthPanel
-								.on(
+						googleEarthPanel.on(
 										"hide",
 										function() {
 											this.toolbar.enable();
-											var layersContainer = Ext
-													.getCmp("tree");
-											var layersToolbar = layersContainer
-													&& layersContainer
-															.getTopToolbar();
+											var layersContainer = Ext.getCmp("tree");
+											var layersToolbar = layersContainer && layersContainer.getTopToolbar();
 											if (layersToolbar) {
 												layersToolbar.enable();
 											}
@@ -442,8 +409,7 @@ var GeoExplorer = Ext
 							tbar : this.toolbar,
 							items : [ this.mapPanelContainer, westPanel ]
 						} ];
-						GeoExplorer.superclass.initPortal
-								.apply(this, arguments);
+						GeoExplorer.superclass.initPortal.apply(this, arguments);
 					},
 					createTools : function() {
 						var tools = [ "-" ];
@@ -469,8 +435,7 @@ var GeoExplorer = Ext
 					},
 					handleSave : function(request) {
 						if (request.status == 200) {
-							var config = Ext.util.JSON
-									.decode(request.responseText);
+							var config = Ext.util.JSON.decode(request.responseText);
 							var mapId = config.id;
 							if (mapId) {
 								this.id = mapId;
@@ -693,8 +658,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		document.cookie = param + '=' + escape(value);
 	},
 	clearCookieValue : function(param) {
-		document.cookie = param
-				+ "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+		document.cookie = param + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 	},
 	getCookieValue : function(param) {
 		var i, x, y, cookies = document.cookie.split(";");
