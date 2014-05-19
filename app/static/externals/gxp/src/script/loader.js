@@ -81,6 +81,8 @@
         "plugins/Print.js",
         "plugins/LoadingIndicator.js",
         "plugins/Playback.js",
+        "plugins/FlexCityCurrentLocation.js",
+        "plugins/FeatureDynamicProjects.js",
         "locale/tr.js"
     );
     

@@ -47,7 +47,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         }
         // should not be persisted or accessed again
         delete config.authStatus;
-        
+        var kurumAdi="";
+        try
+        {
+        	kurumAdi = window.parent.hasGrid("gisTable");
+        }
+        catch(exp)
+        {
+        	
+        }
         config.tools = [
             {
                 ptype: "gxp_layertree",
@@ -118,9 +126,9 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     "example.com": "-your-api-key-here-"
                 }
             },
-            */ 
+            */
             {
-                ptype: "gxp_featurekazihatti",
+                ptype: kurumAdi=="Aykome"?"gxp_featurekazihatti":"gxp_featuredynamicproject",
                 wfsURL: config.wfsURL,
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 13}
@@ -135,6 +143,20 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 toggleGroup: this.toggleGroup,
                 actionTarget: {target: "paneltbar", index: 18}
             }
+//            ,{
+//                ptype: "gxp_featuredynamicproject",
+//                wfsURL: config.wfsURL,
+//                toggleGroup: this.toggleGroup,
+//                actionTarget: {target: "paneltbar", index: 20}
+//            }
+//            ,{
+//    			ptype : "gxp_flexcitycurrentlocation",
+//    			toggleGroup : this.toggleGroup,
+//    			actionTarget : {
+//    				target : "paneltbar",
+//    				index : 19
+//    			}
+//    		}
         ];
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);

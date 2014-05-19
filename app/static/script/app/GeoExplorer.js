@@ -10,8 +10,7 @@ Ext.USE_NATIVE_JSON = true;
 	Ext.preg("gx_bingsource", gxp.plugins.BingSource);
 	Ext.preg("gx_osmsource", gxp.plugins.OSMSource);
 })();
-var GeoExplorer = Ext
-		.extend(
+var GeoExplorer = Ext.extend(
 				gxp.Viewer,
 				{
 					zoomSliderText : "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}</div>",
@@ -192,8 +191,30 @@ var GeoExplorer = Ext
 									                        	   'tileOrigin': new OpenLayers.LonLat(-5123200, 10002100),
 									                        	   'serverResolutions': [105.833545000423, 52.9167725002117, 26.4583862501058, 13.2291931250529, 6.61459656252646, 3.96875793751588, 1.32291931250529, 0.661459656252646, 0.264583862501058, 0.132291931250529]
 																};
-						        					}
+						        				  }
+						        				  
+						        				  
 						        				
+						        				}
+						        				
+						        				var tools = addConfig.tools;
+						        				for(var i=0;i<tools.length;i++)
+						        				{
+						        					var toolName = tools[i].ptype;
+						        					if("gxp_featuredynamicproject"==toolName||"gxp_featurekazihatti"==toolName)
+						        					{
+						        				        var kurumAdi="";
+						        				        try
+						        				        {
+						        				        	kurumAdi = window.parent.hasGrid("gisTable");
+						        				        }
+						        				        catch(exp)
+						        				        {
+						        				        	
+						        				        }
+						        				        
+						        						 tools[i].ptype = (kurumAdi=="Aykome"?"gxp_featurekazihatti":"gxp_featuredynamicproject");
+						        					}
 						        				}
 
 						        			

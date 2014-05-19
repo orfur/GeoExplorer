@@ -578,7 +578,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 	            handler: function(){ 
 	            	try
 	            	{
-		            	if(window.parent.hasGrid("gisTable")=="Aykome") //mis function (tablo acikmi kontrolu)
+		            	if(window.parent.hasGrid("gisTable")=="Aykome" || window.parent.hasGrid("gisTable")=="AYKOME") //mis function (tablo acikmi kontrolu)
 		            		this.saveStrategy.save();
 		            	else
 		            		alert("Gis Adress Tablosu bulunamadı");
