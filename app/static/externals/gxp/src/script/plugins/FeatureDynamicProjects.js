@@ -266,10 +266,24 @@ gxp.plugins.FeatureDynamicProject = Ext.extend(gxp.plugins.Tool, {
 				
 			}
 			
-			feature.attributes["TARIH"] = new Date().toISOString();
-			feature.attributes["KURUM"] = window.parent.getUserFromLiferay();
-			feature.attributes["TURU"] =  window.parent.hasGrid("gisTable");
-			feature.attributes["DURUMU"] = window.parent.getApplicationData("");      	  
+			var applicationDataArray = window.parent.getApplicationData("").split(",");
+    		if(applicationDataArray.length>0)
+    		{
+    			
+    			feature.attributes["TARIH"] = new Date().toISOString();
+    			feature.attributes["KURUM"] = applicationDataArray[0];//window.parent.getUserFromLiferay();
+    			feature.attributes["TURU"] =  applicationDataArray[1];//window.parent.hasGrid("gisTable");
+    			feature.attributes["DURUMU"] = applicationDataArray[2];//window.parent.getApplicationData(""); 
+    		}
+    		else//eger applicationData boş olursa sistem kullanıcısı bilgileri setleniyor.
+    		{
+    			feature.attributes["KURUM"] = window.parent.getUserFromLiferay();
+    			feature.attributes["TURU"] =  window.parent.hasGrid("gisTable"); //BAZ - AYKOME
+    			feature.attributes["DURUMU"] = window.parent.getApplicationData("");    // ILK / SON - Normal sartlarda boş gelecek. 			
+    		}
+			
+			
+   	  
       	  
       	}
       	catch(errM)//sorgulamalar icin try catch blok
@@ -421,6 +435,12 @@ gxp.plugins.FeatureDynamicProject = Ext.extend(gxp.plugins.Tool, {
 		     {
 				   this.vectorLayer.removeAllFeatures();
 				   Ext.Ajax.fireEvent("refreshFLayer",'surecProjeler');
+				   Ext.Ajax.fireEvent("refreshFLayer",'TUM_BAZ_ISTASYONLAR');
+				   Ext.Ajax.fireEvent("refreshFLayer",'VODAFONE_BAZ_ISTASYON');
+				   Ext.Ajax.fireEvent("refreshFLayer",'TURKCELL_BAZ_ISTASYON');
+				   Ext.Ajax.fireEvent("refreshFLayer",'AVEA_BAZ_ISTASYON');
+				   //window.parent.getUserFromLiferay()
+					   
 					
 				    var mapExtent = this.saveStrategy.layer.map.getExtent();
 				    var ls_printUrl = ""; 
@@ -446,19 +466,23 @@ gxp.plugins.FeatureDynamicProject = Ext.extend(gxp.plugins.Tool, {
 			 else if(this.aykomeGridId!=-1 && this.aykomeGridButtonid !=-1 )//delete işlemi aykome grid ve buttonidleri
 		     {
 				 
-				    this.vectorLayer.removeAllFeatures();
-					Ext.Ajax.fireEvent("refreshFLayer",'surecProjeler');
-					try
-					{
-						window.parent.deleteSuccess(true,this.aykomeGridId,this.aykomeGridButtonid);
-					}
-					catch(err)
-					{
-						alert("deleteSucces cağrılamadı");
-					}
-					
-					this.aykomeGridId = -1;
-					this.aykomeGridButtonid = -1;
+				    	this.vectorLayer.removeAllFeatures();
+						Ext.Ajax.fireEvent("refreshFLayer",'surecProjeler');
+						Ext.Ajax.fireEvent("refreshFLayer",'TUM_BAZ_ISTASYONLAR');
+						Ext.Ajax.fireEvent("refreshFLayer",'VODAFONE_BAZ_ISTASYON');
+						Ext.Ajax.fireEvent("refreshFLayer",'TURKCELL_BAZ_ISTASYON');
+						Ext.Ajax.fireEvent("refreshFLayer",'AVEA_BAZ_ISTASYON');
+						try
+						{
+							window.parent.deleteSuccess(true,this.aykomeGridId,this.aykomeGridButtonid);
+						}
+						catch(err)
+						{
+							alert("deleteSucces cağrılamadı");
+						}
+						
+						this.aykomeGridId = -1;
+						this.aykomeGridButtonid = -1;
 		     }
 		});
 		
@@ -660,8 +684,18 @@ gxp.plugins.FeatureDynamicProject = Ext.extend(gxp.plugins.Tool, {
 	            	try
 	            	{
 		            	if(window.parent.hasGrid("gisTable")=="BAZ") //mis function (tablo acikmi kontrolu)
-		            		this.saveStrategy.save();
-		            	else
+		            	{
+		        			var applicationDataArray = window.parent.getApplicationData("").split(",");
+		            		if(applicationDataArray.length>2)
+		            		{
+		            			if(applicationDataArray[2]!="PARAMETER_READONLY")
+		            				this.saveStrategy.save();
+		            			else
+		            				alert("Saltokunur, işlem yapılamaz.");
+		            		}
+		            		else
+		            			this.saveStrategy.save();
+		            	}else
 		            		alert("Gis Baz Tablosu bulunamadı");
 	            	}
 	            	catch (err) {

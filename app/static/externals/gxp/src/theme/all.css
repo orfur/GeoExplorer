@@ -172,6 +172,10 @@
     background-image: url(img/silk/featuregerial.png);
 }
 
+.x-btn .gxp-icon-noktaAt, .x-menu-item .gxp-icon-noktaAt, .x-tree-node .gxp-icon-noktaAt {
+    background-image: url(img/silk/add_point_off.png);
+}
+
 .x-btn .gxp-icon-featurekazihattisave, .x-menu-item .gxp-icon-featurekazihattisave, .x-tree-node .gxp-icon-featurekazihattisave {
     background-image: url(img/silk/save.png);
 }

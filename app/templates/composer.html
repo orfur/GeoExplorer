@@ -40,6 +40,48 @@
         if (GeoExt.Lang) {
             GeoExt.Lang.set(OpenLayers.Util.getParameters()["locale"] || GeoExt.Lang.locale);
         }
+        
+	/*	var applicationDataArray = "17,BAZ,ILK".split(",");//window.parent.getApplicationData("").split(",");
+
+		var bazIstasyonuKatmanTanimi = null;
+		if(applicationDataArray.length>0)
+		{
+			var applicationParameterFlexCityKurumID = applicationDataArray[0];
+			var parameterKurum = null; // baz istasyonu (turkcell,vodafone,avea) katmanının adı vb uygulamaya gecilen kurum parametresi - profil dışında eklenecek olan katman için kullanılıyor.
+			if(17 == applicationParameterFlexCityKurumID)
+			{
+				parameterKurum = "UniversalWorkspace:TUM_BAZ_ISTASYONLAR";
+			}
+			else if(18 == applicationParameterFlexCityKurumID)
+			{
+				parameterKurum = "UniversalWorkspace:VODAFONE_BAZ_ISTASYON";
+			}
+			else if(19 == applicationParameterFlexCityKurumID)
+			{
+				parameterKurum = "UniversalWorkspace:AVEA_BAZ_ISTASYON";
+			}
+			else if(20 == applicationParameterFlexCityKurumID)
+			{
+				parameterKurum = "UniversalWorkspace:TURKCELL_BAZ_ISTASYON";
+			}
+			
+			
+			bazIstasyonuKatmanTanimi =
+            {
+            	source:"local",
+            	name:parameterKurum,
+            	title:"BAZ ISTASYONLARI",
+            	visibility:true,
+            	opacity:1,
+            	selected:false,
+            	format:"image/png",
+            	styles:"",
+            	transparent:true,
+            	cached:true
+            };
+		}
+*/
+        
         GeoExt.Lang.set("tr");
         Proj4js.defs["EPSG:900915"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +datum=ITRF96 +units=m +no_defs";
         Proj4js.defs["EPSG:900916"] = "+proj=tmerc +lat_0=0 +lon_0=30 +k=1 +x_0=500000 +y_0=0 +datum=WGS84 +units=m +no_defs";
@@ -206,6 +248,7 @@
                 	transparent:true,
                 	cached:true
                 },
+                //bazIstasyonuKatmanTanimi,
                 {
                		source:"local",
                		name:"UniversalWorkspace:SDE.YAGMURSUYU_HAT",
