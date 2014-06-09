@@ -159,8 +159,8 @@ GeoExt.Lang.add("tr", {
     },
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
-        infoActionTip: "Nense Bilgisini Al",
-        popupTitle: "Nense Bilgisini Al"
+        infoActionTip: "Nesne Bilgisini Al",
+        popupTitle: "Nesne Bilgisini Al"
     },
 
     "gxp.plugins.Zoom.prototype": {
