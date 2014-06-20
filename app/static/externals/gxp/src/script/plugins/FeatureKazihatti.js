@@ -210,7 +210,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
 			    mode: 'local',
 			    fieldLabel: "Sokak",
 			    store: mahSokStore,
-			    valueField: 'YOL_ID',
+			    valueField: 'MAH_SOK',
 			    displayField: 'MAH_SOK'
     		});
     		var selectRegionWin = new Ext.Window({
@@ -230,7 +230,7 @@ gxp.plugins.Featurekazihatti = Ext.extend(gxp.plugins.Tool, {
                     text: "Tamam",
                     formBind: true,
                     handler: function(){
-                    	var item = mahSokStore.getAt(mahSokStore.find("YOL_ID",cbxRegion.getValue()));
+                    	var item = mahSokStore.getAt(mahSokStore.find("MAH_SOK",cbxRegion.getValue()));
                     	for (r in item.data)
                     	{
                     		if (r!='MAH_SOK')
