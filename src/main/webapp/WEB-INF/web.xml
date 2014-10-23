@@ -28,11 +28,11 @@
 		</init-param>
 		<init-param>
 			<param-name>geoserver_url</param-name>
-			<param-value>http://cbsserver.sultanbeyli.bel.tr:8890/geoserver/</param-value>
+			<param-value>http://cbs.mugla.bel.tr:8890/geoserver/</param-value>
 		</init-param>
 		<init-param>
 			<param-name>GEOEXPLORER_DATA</param-name>
-			<param-value>C:/Java/gis/geoexplorer/GEOEXPLORER_DATA</param-value>
+			<param-value>C:\Java\GEOEXPLORER_DATA</param-value>
 		</init-param>
 		<init-param>
 			<param-name>geoserver_username</param-name>
@@ -40,7 +40,7 @@
 		</init-param>
 		<init-param>
 			<param-name>geoserver_password</param-name>
-			<param-value>giSoft2013</param-value>
+			<param-value>uniyaz2014</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
